@@ -1,0 +1,22 @@
+{
+  "folders": ["Class notes", "Class notes/Adavus", "Choreography", "Music and sahitya"],
+  "notes": [
+    {
+      "title": "Tatta adavu: practice notes",
+      "folder": "Class notes/Adavus",
+      "date": "1 Oct 2026",
+      "body": "Replace this sample with your own note. Folder paths use / to nest, for example Class notes/Adavus.",
+      "images": [],
+      "links": ["https://www.youtube.com/@nruthyalya"]
+    },
+    {
+      "title": "Sample note with images",
+      "folder": "Choreography",
+      "date": "1 Oct 2026",
+      "body": "Put photos in the images folder, then list the file names here, for example [\"varnam-1.jpg\", \"varnam-2.jpg\"].",
+      "images": [],
+      "links": []
+    }
+  ],
+  "gallery": []
+}

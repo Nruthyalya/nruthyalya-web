@@ -98,6 +98,7 @@ form.note[hidden]{display:none}
 #lb img{margin:auto;max-width:100%;max-height:100%;cursor:zoom-in}
 #lb.full img{max-width:none;max-height:none;cursor:zoom-out}
 #lb .c{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:16px;background:#fff;color:#000;border:0;border-radius:6px;padding:6px 14px;cursor:pointer;font:500 .95rem Hind,sans-serif}
+.leaf .nm{font-size:.92rem;color:var(--muted)}.leaf.on .nm{color:var(--ink)}#tree .nm{line-height:1.3}.sq{padding:10px 12px;border-bottom:1px solid var(--line)}
 footer{text-align:center;color:var(--muted);padding:24px;font-size:.9rem;border-top:1px solid var(--line)}
 </style>
 </head>
@@ -176,7 +177,7 @@ footer{text-align:center;color:var(--muted);padding:24px;font-size:.9rem;border-
 
 <section id="gallery" hidden>
 <h2>Gallery</h2>
-<p class="small">Photos from performances, classes and festivals. Photos are saved in this browser only.</p>
+<p class="small">Photos from performances, classes and festivals. Photos added here stay in this browser; photos listed in content/notes.json show for everyone.</p>
 <div class="bar">
 <label class="btn red" for="up" style="margin:0;color:#fff;cursor:pointer">Add photos</label>
 <input id="up" type="file" accept="image/*" multiple hidden>
@@ -186,10 +187,11 @@ footer{text-align:center;color:var(--muted);padding:24px;font-size:.9rem;border-
 
 <section id="notes" hidden>
 <h2>Notes</h2>
-<p class="small">Organise class notes, choreography and reference videos in nested folders. Notes are saved in this browser only.</p>
+<p class="small">Class notes, choreography and reference videos in nested folders. Notes added here stay in this browser; notes in content/notes.json show for everyone.</p>
 <div class="ws">
 <div class="side">
 <div class="hd">Folders<button type="button" id="newF">New folder</button></div>
+<div class="sq"><input id="q" type="search" placeholder="Search notes by title" aria-label="Search notes by title"></div>
 <div id="tree"></div>
 </div>
 <div class="pane">
@@ -216,6 +218,10 @@ footer{text-align:center;color:var(--muted);padding:24px;font-size:.9rem;border-
 var $=function(s){return document.querySelector(s)};
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){alert('Storage is full. Delete some items and try again.');return false}}
+function saveN(){save('nr_notes',notes.filter(function(n){return !n.ro}))}
+function saveF(){save('nr_folders',folders.filter(function(f){return !f.ro}))}
+function saveP(){save('nr_photos',photos.filter(function(p){return !p.ro}))}
+function IS(s){return /^(data:|https?:|images\/)/.test(s)?s:'images/'+s}
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 
 var tabs=document.querySelectorAll('nav button');
@@ -229,10 +235,10 @@ var photos=load('nr_photos',[]);
 function drawGallery(){
 var g=$('#grid');
 if(!photos.length){g.innerHTML='<div class="empty" style="grid-column:1/-1">No photos yet. Choose Add photos to start the gallery.</div>';return}
-g.innerHTML=photos.map(function(p,i){return '<figure><img src="'+p.src+'" alt="'+esc(p.cap||'Gallery photo')+'"><button class="x" data-i="'+i+'" aria-label="Delete photo">×</button><figcaption><input data-c="'+i+'" value="'+esc(p.cap||'')+'" placeholder="Add a caption" aria-label="Caption"></figcaption></figure>'}).join('');
+g.innerHTML=photos.map(function(p,i){return '<figure><img src="'+p.src+'" alt="'+esc(p.cap||'Gallery photo')+'">'+(p.ro?'':'<button class="x" data-i="'+i+'" aria-label="Delete photo">×</button>')+'<figcaption>'+(p.ro?esc(p.cap||''):'<input data-c="'+i+'" value="'+esc(p.cap||'')+'" placeholder="Add a caption" aria-label="Caption">')+'</figcaption></figure>'}).join('');
 }
-$('#grid').addEventListener('click',function(e){var i=e.target.dataset.i;if(i!==undefined&&confirm('Delete this photo?')){photos.splice(+i,1);save('nr_photos',photos);drawGallery()}});
-$('#grid').addEventListener('change',function(e){var i=e.target.dataset.c;if(i!==undefined){photos[+i].cap=e.target.value;save('nr_photos',photos)}});
+$('#grid').addEventListener('click',function(e){var i=e.target.dataset.i;if(i!==undefined&&confirm('Delete this photo?')){photos.splice(+i,1);saveP();drawGallery()}});
+$('#grid').addEventListener('change',function(e){var i=e.target.dataset.c;if(i!==undefined){photos[+i].cap=e.target.value;saveP()}});
 function shrink(file,m){return new Promise(function(res){
 var r=new FileReader();
 r.onload=function(){var im=new Image();im.onload=function(){
@@ -244,7 +250,7 @@ r.onerror=function(){res(null)};r.readAsDataURL(file)})}
 $('#up').addEventListener('change',function(e){
 Promise.all(Array.prototype.map.call(e.target.files,function(f){return shrink(f,900)})).then(function(out){
 out.forEach(function(s){if(s)photos.unshift({src:s,cap:''})});
-save('nr_photos',photos);drawGallery();e.target.value=''})});
+saveP();drawGallery();e.target.value=''})});
 drawGallery();
 
 // Notes: nested folders
@@ -254,44 +260,57 @@ if(!folders){
 var oc=load('nr_cats',['Choreography','Class notes','Music and sahitya']);
 folders=oc.map(function(n,i){return {id:'f'+i,name:n,parent:null}});
 notes.forEach(function(n){var f=folders.filter(function(x){return x.name===n.cat})[0];n.folder=f?f.id:folders[0].id});
-save('nr_folders',folders);save('nr_notes',notes);
+saveF();saveN();
 }
-var sel=null,open={},editing=null,pending=[];
+var sel=null,selN=null,open={},editing=null,pending=[];
 function kids(p){return folders.filter(function(f){return f.parent===p})}
 function byId(id){return folders.filter(function(f){return f.id===id})[0]}
 function subtree(id){var o=[id];kids(id).forEach(function(k){o=o.concat(subtree(k.id))});return o}
 function count(id){var ids=subtree(id);return notes.filter(function(n){return ids.indexOf(n.folder)>-1}).length}
 function path(id){var o=[],f=byId(id);while(f){o.unshift(f.name);f=byId(f.parent)}return o.join(' / ')}
-function branch(p,d){return '<ul>'+kids(p).map(function(f){var k=kids(f.id).length;
+function nIn(id){return notes.filter(function(n){return n.folder===id})}
+function openUp(id){var f=byId(id);while(f){open[f.id]=true;f=byId(f.parent)}}
+function branch(p,d){
+var pad='padding-left:'+(6+d*16)+'px';
+var h=kids(p).map(function(f){var k=kids(f.id).length+nIn(f.id).length;
+return '<li><div class="tn'+(sel===f.id&&!selN?' on':'')+'" style="'+pad+'"><button class="tg" data-tg="'+f.id+'" aria-label="Expand or collapse"'+(k?'':' disabled')+'>'+(k?(open[f.id]?'▾':'▸'):'')+'</button><button class="nm" data-s="'+f.id+'">'+esc(f.name)+'</button><span class="ct">'+count(f.id)+'</span></div>'+(open[f.id]?branch(f.id,d+1):'')+'</li>'}).join('');
+h+=nIn(p).map(function(n){return '<li><div class="tn leaf'+(selN===n.id?' on':'')+'" style="'+pad+'"><span class="tg"></span><button class="nm" data-n="'+n.id+'">'+esc(n.title)+'</button></div></li>'}).join('');
+return '<ul>'+h+'</ul>'}
+function branchOld(p,d){return '<ul>'+kids(p).map(function(f){var k=kids(f.id).length;
 return '<li><div class="tn'+(sel===f.id?' on':'')+'" style="padding-left:'+(6+d*16)+'px"><button class="tg" data-tg="'+f.id+'" aria-label="Expand or collapse"'+(k?'':' disabled')+'>'+(k?(open[f.id]?'▾':'▸'):'')+'</button><button class="nm" data-s="'+f.id+'">'+esc(f.name)+'</button><span class="ct">'+count(f.id)+'</span></div>'+(k&&open[f.id]?branch(f.id,d+1):'')+'</li>'}).join('')+'</ul>'}
 function drawTree(){
-$('#tree').innerHTML='<div class="tn'+(sel===null?' on':'')+'"><span class="tg"></span><button class="nm" data-s="">All notes</button><span class="ct">'+notes.length+'</span></div>'+branch(null,0);
+var q=$('#q').value.trim().toLowerCase();
+if(q){var r=notes.filter(function(n){return n.title.toLowerCase().indexOf(q)>-1});
+$('#tree').innerHTML=r.length?'<ul>'+r.map(function(n){return '<li><div class="tn'+(selN===n.id?' on':'')+'"><button class="nm" data-n="'+n.id+'">'+esc(n.title)+'<br><span class="ct">'+esc(path(n.folder))+'</span></button></div></li>'}).join('')+'</ul>':'<div class="empty" style="margin:12px">No notes match this title.</div>'}
+else $('#tree').innerHTML='<div class="tn'+(sel===null&&!selN?' on':'')+'"><span class="tg"></span><button class="nm" data-s="">All notes</button><span class="ct">'+notes.length+'</span></div>'+branch(null,0);
 var opts=[];(function w(p){kids(p).forEach(function(f){opts.push('<option value="'+f.id+'">'+esc(path(f.id))+'</option>');w(f.id)})})(null);
 $('#nc').innerHTML=opts.join('');
 }
 function drawPane(){
 $('#ttl').textContent=sel?path(sel):'All notes';
-$('#acts').innerHTML='<button class="btn red" data-a="note">New note</button>'+(sel?'<button class="btn" data-a="sub">New subfolder</button><button class="btn" data-a="ren">Rename</button><button class="btn" data-a="del">Delete folder</button>':'');
+$('#acts').innerHTML='<button class="btn red" data-a="note">New note</button>'+(sel?'<button class="btn" data-a="sub">New subfolder</button>'+(byId(sel).ro?'':'<button class="btn" data-a="ren">Rename</button><button class="btn" data-a="del">Delete folder</button>'):'');
 var ids=sel?subtree(sel):null;
-var l=notes.filter(function(n){return !ids||ids.indexOf(n.folder)>-1});
+var l=notes.filter(function(n){return selN?n.id===selN:(!ids||ids.indexOf(n.folder)>-1)});
 if(!l.length){$('#list').innerHTML='<div class="empty">'+(sel?'This folder has no notes yet. Choose New note to add one.':'No notes yet. Create a folder, then choose New note.')+'</div>';return}
 $('#list').innerHTML=l.map(function(n){
 var links=(n.links||[]).map(function(u){return '<a href="'+esc(u)+'" target="_blank" rel="noopener">▶ '+esc(u.replace(/^https?:\/\/(www\.)?/,''))+'</a>'}).join('');
-var imgs=(n.images||[]).length?'<div class="imgs">'+n.images.map(function(s,i){return '<button type="button" class="ib" data-z="'+n.id+':'+i+'" aria-label="Enlarge image '+(i+1)+'"><img src="'+s+'" alt="Note image '+(i+1)+'"></button>'}).join('')+'</div>':'';
-return '<article class="nc"><h4>'+esc(n.title)+'<span class="tag">'+esc(path(n.folder))+'</span></h4>'+(n.body?'<p>'+esc(n.body)+'</p>':'')+imgs+(links?'<div class="links">'+links+'</div>':'')+'<div style="margin-top:6px"><span class="small">'+esc(n.date||'')+'</span> &nbsp; <button class="linkbtn" data-e="'+n.id+'">Edit</button><button class="linkbtn" data-d="'+n.id+'">Delete</button></div></article>'}).join('');
+var imgs=(n.images||[]).length?'<div class="imgs">'+n.images.map(function(s,i){return '<button type="button" class="ib" data-z="'+n.id+':'+i+'" aria-label="Enlarge image '+(i+1)+'"><img loading="lazy" src="'+IS(s)+'" alt="Note image '+(i+1)+'"></button>'}).join('')+'</div>':'';
+return '<article class="nc"><h4>'+esc(n.title)+'<span class="tag">'+esc(path(n.folder))+'</span></h4>'+(n.body?'<p>'+esc(n.body)+'</p>':'')+imgs+(links?'<div class="links">'+links+'</div>':'')+'<div style="margin-top:6px"><span class="small">'+esc(n.date||'')+'</span> &nbsp; '+(n.ro?'<span class="small">Published</span>':'<button class="linkbtn" data-e="'+n.id+'">Edit</button><button class="linkbtn" data-d="'+n.id+'">Delete</button>')+'</div></article>'}).join('');
 }
 function draw(){drawTree();drawPane()}
 function addFolder(parent){
 var n=prompt(parent?'Name of the new subfolder':'Name of the new folder');
 if(!n||!n.trim())return;
 var f={id:'f'+Date.now(),name:n.trim().slice(0,40),parent:parent};
-folders.push(f);if(parent)open[parent]=true;sel=f.id;save('nr_folders',folders);draw();
+folders.push(f);if(parent)open[parent]=true;sel=f.id;selN=null;saveF();draw();
 }
+$('#q').addEventListener('input',drawTree);
 $('#newF').addEventListener('click',function(){addFolder(null)});
 $('#tree').addEventListener('click',function(e){
 var t=e.target.closest('button');if(!t)return;
 if(t.dataset.tg){open[t.dataset.tg]=!open[t.dataset.tg];drawTree()}
-else if(t.dataset.s!==undefined){sel=t.dataset.s||null;if(sel&&kids(sel).length)open[sel]=true;$('#form').hidden=true;draw()}
+else if(t.dataset.n!==undefined){var nn=notes.filter(function(n){return String(n.id)===t.dataset.n})[0];selN=nn.id;sel=nn.folder;openUp(sel);$('#form').hidden=true;draw()}
+else if(t.dataset.s!==undefined){sel=t.dataset.s||null;selN=null;if(sel)open[sel]=true;$('#form').hidden=true;draw()}
 });
 function openForm(n){
 if(!folders.length){alert('Create a folder first, then add notes to it.');return}
@@ -303,12 +322,12 @@ $('#acts').addEventListener('click',function(e){
 var a=e.target.dataset.a;if(!a)return;
 if(a==='note')openForm(null);
 if(a==='sub')addFolder(sel);
-if(a==='ren'){var n=prompt('Rename folder',byId(sel).name);if(n&&n.trim()){byId(sel).name=n.trim().slice(0,40);save('nr_folders',folders);draw()}}
+if(a==='ren'){var n=prompt('Rename folder',byId(sel).name);if(n&&n.trim()){byId(sel).name=n.trim().slice(0,40);saveF();draw()}}
 if(a==='del'){var ids=subtree(sel),c=count(sel);
 if(confirm('Delete "'+byId(sel).name+'"'+(kids(sel).length?', its subfolders':'')+' and '+c+' note'+(c===1?'':'s')+'?')){
 notes=notes.filter(function(n){return ids.indexOf(n.folder)<0});
 folders=folders.filter(function(f){return ids.indexOf(f.id)<0});
-sel=null;save('nr_notes',notes);save('nr_folders',folders);draw()}}
+sel=null;selN=null;saveN();saveF();draw()}}
 });
 function drawPending(){$('#pv').innerHTML=pending.map(function(s,i){return '<span><img src="'+s+'" alt="Attached image '+(i+1)+'"><button type="button" data-r="'+i+'" aria-label="Remove image">×</button></span>'}).join('')}
 $('#ni').addEventListener('change',function(e){
@@ -326,16 +345,25 @@ var links=$('#nl').value.split('\n').map(function(s){return s.trim()}).filter(Bo
 var data={title:$('#nt').value.trim(),folder:$('#nc').value,body:$('#nb').value.trim(),links:links,images:pending.slice()};
 if(editing){notes=notes.map(function(n){return n.id===editing?Object.assign(n,data):n})}
 else{data.id=Date.now();data.date=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});notes.unshift(data)}
-save('nr_notes',notes);$('#form').hidden=true;open[data.folder]=true;draw();
+saveN();$('#form').hidden=true;$('#q').value='';openUp(data.folder);sel=data.folder;selN=editing||data.id;draw();
 });
 $('#list').addEventListener('click',function(e){
 var z=e.target.closest('[data-z]');
-if(z){var pr=z.dataset.z.split(':'),nn=notes.filter(function(n){return String(n.id)===pr[0]})[0];lb.querySelector('img').src=nn.images[+pr[1]];lb.hidden=false;return}
+if(z){var pr=z.dataset.z.split(':'),nn=notes.filter(function(n){return String(n.id)===pr[0]})[0];lb.querySelector('img').src=IS(nn.images[+pr[1]]);lb.hidden=false;return}
 var d=e.target.dataset.d,ed=e.target.dataset.e;
-if(d&&confirm('Delete this note?')){notes=notes.filter(function(n){return String(n.id)!==d});save('nr_notes',notes);draw()}
+if(d&&confirm('Delete this note?')){notes=notes.filter(function(n){return String(n.id)!==d});selN=null;saveN();draw()}
 if(ed){openForm(notes.filter(function(n){return String(n.id)===ed})[0])}
 });
 draw();
+fetch('content/notes.json',{cache:'no-cache'}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){
+var map={},rf=[],rn=[];
+function ensure(p){var par=null,f=null,acc='';String(p).split('/').forEach(function(x){x=x.trim();if(!x)return;acc+='/'+x;if(!map[acc]){map[acc]={id:'p'+rf.length,name:x,parent:par,ro:1};rf.push(map[acc])}f=map[acc];par=f.id});return f}
+(d.folders||[]).forEach(ensure);
+(d.notes||[]).forEach(function(n,i){var f=ensure(n.folder||'General')||ensure('General');rn.push({id:'r'+i,title:n.title||'Untitled',folder:f.id,body:n.body||'',links:n.links||[],images:n.images||[],date:n.date||'',ro:1})});
+folders=rf.concat(folders);notes=rn.concat(notes);
+photos=(d.gallery||[]).map(function(g){return {src:IS(g.file),cap:g.caption||'',ro:1}}).concat(photos);
+drawGallery();draw();
+}).catch(function(){});
 })();
 </script>
 </body>

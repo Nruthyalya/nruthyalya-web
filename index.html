@@ -44,7 +44,7 @@
 <div>
 <h1>Nruthyalya</h1>
 <div class="sub">School of Bharatanatyam, Bengaluru</div>
-<p>Where Technique Meets Tradition, and Dance Becomes Sadhana. Founded in 2013 by Ashwini Ravi.</p>
+<p>Bharatanatyam and Carnatic music, taught as technique, sahitya and sadhana. Founded in 2013 by Ashwini Ravi.</p>
 </div></div></div>
 
 <main><div class="wrap">
@@ -131,6 +131,10 @@
 var $=function(s){return document.querySelector(s)};
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function IS(s){return /^(data:|https?:|images\/)/.test(s)?s:'images/'+s}
+function ytEmbed(u){
+  var m=u.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{11})/);
+  return m?'https://www.youtube.com/embed/'+m[1]:null;
+}
 
 // ── Tab navigation ──────────────────────────────────────────────────────────
 var tabs=document.querySelectorAll('nav button');
@@ -395,7 +399,11 @@ function drawPane(){
   }
 
   $('#list').innerHTML=list.map(function(n){
-    var links=(n.links||[]).map(function(u){return '<a href="'+esc(u)+'" target="_blank" rel="noopener">▶ '+esc(u.replace(/^https?:\/\/(www\.)?/,''))+'</a>'}).join('');
+    var links=(n.links||[]).map(function(u){
+      var em=ytEmbed(u);
+      if(em){return '<div class="yt-wrap"><iframe src="'+esc(em)+'?rel=0" title="YouTube video" allowfullscreen loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>';}
+      return '<a href="'+esc(u)+'" target="_blank" rel="noopener">▶ '+esc(u.replace(/^https?:\/\/(www\.)?/,''))+'</a>';
+    }).join('');
     var imgs=(n.images||[]).length?'<div class="imgs">'+n.images.map(function(s,i){return '<button type="button" class="ib" data-z="'+n.id+':'+i+'" aria-label="Enlarge image '+(i+1)+'"><img loading="lazy" src="'+IS(s)+'" alt="Note image '+(i+1)+'"></button>'}).join('')+'</div>':'';
     return '<article class="nc">'
       +'<h4>'+esc(n.title)+'<span class="tag">'+esc(n.folder||'')+'</span></h4>'

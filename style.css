@@ -419,42 +419,129 @@ figure .x {
   background: var(--chip);
 }
 
-.side ul {
-  list-style: none;
-  margin: 0;
-  padding: 6px 0;
+/* Search box inside sidebar */
+.side-search {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+  background: var(--chip);
+}
+
+.side-search input {
+  width: 100%;
+  padding: 6px 10px;
+  font-size: .88rem;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.side-search input:focus {
+  outline: 2px solid var(--gold);
+  outline-offset: 1px;
+}
+
+/* Tree scrollable area */
+#tree {
   flex: 1;
   overflow-y: auto;
 }
 
-.side li button {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  border: 0;
-  background: none;
-  font: 500 .97rem Hind, sans-serif;
-  color: var(--ink);
-  padding: 9px 16px;
-  cursor: pointer;
-  border-left: 3px solid transparent;
-  text-align: left;
-  gap: 8px;
+#tree ul {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
 }
 
-.side li button:hover { background: var(--surface); }
+#tree ul ul {
+  padding: 0;
+}
 
-.side li button.on {
+/* Each row in the tree (folder or note) */
+.tree-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border-left: 3px solid transparent;
+  min-height: 32px;
+}
+
+.tree-row:hover { background: var(--surface); }
+
+.tree-row.on {
   background: var(--surface);
   border-left-color: var(--red);
-  font-weight: 600;
 }
 
-.side li button .ct {
-  font-size: .8rem;
+/* Toggle arrow button (▸ / ▾) */
+.tree-tog {
+  flex: none;
+  width: 20px;
+  height: 28px;
+  border: 0;
+  background: none;
   color: var(--muted);
-  flex-shrink: 0;
+  font-size: .75rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+/* Placeholder spacer when there is no toggle */
+.tree-tog-ph {
+  display: inline-block;
+  width: 20px;
+  flex: none;
+}
+
+/* Folder label button */
+.tree-label {
+  flex: 1;
+  border: 0;
+  background: none;
+  font: 500 .95rem Hind, sans-serif;
+  color: var(--ink);
+  cursor: pointer;
+  text-align: left;
+  padding: 5px 8px 5px 2px;
+  line-height: 1.3;
+}
+
+.tree-label .ct {
+  font-size: .78rem;
+  color: var(--muted);
+}
+
+/* Note leaf button */
+.tree-note-btn {
+  flex: 1;
+  border: 0;
+  background: none;
+  font: 400 .9rem Hind, sans-serif;
+  color: var(--muted);
+  cursor: pointer;
+  text-align: left;
+  padding: 4px 8px 4px 0;
+  line-height: 1.3;
+}
+
+.tree-row.tree-note.on .tree-note-btn {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.tree-note-btn .ct {
+  display: block;
+  font-size: .75rem;
+  color: var(--muted);
+}
+
+.side-no-results {
+  display: block;
+  padding: 10px 16px;
+  font-size: .88rem;
+  color: var(--muted);
+  font-style: italic;
 }
 
 /* Notes pane */

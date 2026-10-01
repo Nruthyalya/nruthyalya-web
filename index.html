@@ -8,70 +8,100 @@
 <style>
 :root{--bg:#F5F4F0;--surface:#fff;--ink:#1c2326;--muted:#5d6a6d;--line:#dcd8cf;--teal:#0E3B3D;--teal-ink:#F3EBD6;--red:#A81E2B;--gold:#C8962E;--chip:#ece8dd;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1517;--surface:#152123;--ink:#ece7da;--muted:#98a6a8;--line:#27393b;--teal:#081f21;--teal-ink:#F3EBD6;--red:#e0525d;--gold:#dcab4a;--chip:#1d2f31}}
-:root[data-theme="dark"]{--bg:#0d1517;--surface:#152123;--ink:#ece7da;--muted:#98a6a8;--line:#27393b;--teal:#081f21;--teal-ink:#F3EBD6;--red:#e0525d;--gold:#dcab4a;--chip:#1d2f31}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1517;--surface:#152123;--ink:#ece7da;--muted:#98a6a8;--line:#27393b;--teal:#081f21;--red:#e0525d;--gold:#dcab4a;--chip:#1d2f31}}
+:root[data-theme="dark"]{--bg:#0d1517;--surface:#152123;--ink:#ece7da;--muted:#98a6a8;--line:#27393b;--teal:#081f21;--red:#e0525d;--gold:#dcab4a;--chip:#1d2f31}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.65 Hind,system-ui,sans-serif}
 h1,h2,h3{font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;line-height:1.15;margin:0}
 a{color:var(--red)}
 :focus-visible{outline:3px solid var(--gold);outline-offset:2px}
-.hero{background:var(--teal);color:var(--teal-ink);padding:64px 20px 56px;border-bottom:6px double var(--gold)}
-.wrap{max-width:960px;margin:0 auto}
-.head{display:flex;align-items:center;gap:36px}.logo{width:clamp(130px,22vw,210px);flex:none;color:var(--gold)}@media(max-width:640px){.head{flex-direction:column;align-items:flex-start;gap:20px}}
-.hero h1{font-size:clamp(3rem,10vw,5.6rem);font-weight:700;letter-spacing:.01em}
-.hero .sub{font-family:"Cormorant Garamond",serif;font-style:italic;font-size:1.5rem;color:var(--gold);margin:.4rem 0 1.4rem}
-.hero p{max-width:56ch;margin:0 0 1.6rem;color:#d9d3c0}
-.btns{display:flex;gap:12px;flex-wrap:wrap}
-.btn{display:inline-block;padding:10px 20px;border-radius:999px;border:1.5px solid var(--gold);color:var(--teal-ink);text-decoration:none;font-weight:500;background:transparent;cursor:pointer;font:inherit}
-.btn.fill{background:var(--gold);color:#1c1a12}
-.btn:hover{filter:brightness(1.1)}
-nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
-nav .wrap{display:flex;gap:6px;padding:8px 20px;overflow-x:auto}
-nav button{border:0;background:none;font:500 1rem Hind,sans-serif;color:var(--muted);padding:8px 16px;border-radius:999px;cursor:pointer;white-space:nowrap}
-nav button[aria-selected="true"]{background:var(--red);color:#fff}
-main{padding:36px 20px 80px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--teal);color:var(--teal-ink);border-bottom:3px solid var(--gold)}
+header.top .wrap{display:flex;align-items:center;gap:20px;min-height:60px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font:700 1.55rem "Cormorant Garamond",serif;color:var(--teal-ink);margin-right:auto}
+.brand svg{width:30px;height:30px;color:var(--gold)}
+nav{display:flex;gap:4px}
+nav button{border:0;background:none;font:500 1rem Hind,sans-serif;color:#cfc8b4;padding:19px 16px 16px;border-bottom:3px solid transparent;margin-bottom:-3px;cursor:pointer}
+nav button[aria-selected="true"]{color:#fff;border-bottom-color:var(--gold)}
+nav button:hover{color:#fff}
+.soc a{color:var(--teal-ink);font-size:.95rem;margin-left:14px;text-decoration:none;border-bottom:1px solid var(--gold)}
+.hero{background:var(--teal);color:var(--teal-ink);padding:56px 0 60px}
+.head{display:flex;align-items:center;gap:48px}
+.logo{width:clamp(130px,20vw,200px);flex:none;color:var(--gold)}
+@media(max-width:640px){.head{flex-direction:column;align-items:flex-start;gap:20px}}
+.hero h1{font-size:clamp(3rem,9vw,5rem);font-weight:700}
+.hero .sub{font-family:"Cormorant Garamond",serif;font-style:italic;font-size:1.5rem;color:var(--gold);margin:.3rem 0 1rem}
+.hero p{max-width:54ch;margin:0;color:#d9d3c0}
+main{padding:44px 0 80px}
 section[hidden]{display:none}
-h2{font-size:2.4rem;margin-bottom:.6rem}
-.cols{display:grid;grid-template-columns:1.6fr 1fr;gap:40px}
-@media(max-width:760px){.cols{grid-template-columns:1fr;gap:24px}}
-.facts{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--gold);padding:20px 22px;border-radius:6px;align-self:start}
-.facts h3{font-size:1.4rem;margin-bottom:.5rem}
-.facts ul{margin:0;padding-left:1.1rem}
-.facts li{margin:.35rem 0}
-.stats{display:flex;gap:28px;margin:1.2rem 0;flex-wrap:wrap}
-.stats b{display:block;font:700 2.2rem "Cormorant Garamond",serif;color:var(--red)}
-.stats span{color:var(--muted);font-size:.95rem}
-.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0 20px}
-.btn.dark{color:var(--ink);border-color:var(--line);background:var(--surface);padding:8px 16px}
+h2{font-size:2.4rem;margin-bottom:.4rem}
+.cols{display:grid;grid-template-columns:1.7fr 1fr;gap:56px}
+@media(max-width:800px){.cols{grid-template-columns:1fr;gap:28px}}
+.lead{color:var(--muted);margin:0 0 1.2rem}
+.cols p{max-width:68ch}
+.facts{border-top:3px solid var(--gold);padding-top:14px;align-self:start}
+.facts h3{font-size:1.5rem;margin-bottom:.4rem}
+.facts ul{margin:0 0 1.4rem;padding:0;list-style:none}
+.facts li{padding:8px 0;border-bottom:1px solid var(--line)}
+.stats{display:flex;gap:0;margin:1.6rem 0 0;border:1px solid var(--line);border-radius:6px;background:var(--surface);max-width:560px}
+.stats div{flex:1;padding:16px 20px;border-right:1px solid var(--line)}.stats div:last-child{border:0}
+.stats b{display:block;font:700 2.2rem "Cormorant Garamond",serif;color:var(--red);line-height:1.1}
+.stats span{color:var(--muted);font-size:.9rem}
+.btn{display:inline-block;padding:8px 18px;border-radius:6px;border:1px solid var(--line);color:var(--ink);background:var(--surface);cursor:pointer;font:500 .95rem Hind,sans-serif;text-decoration:none}
 .btn.red{background:var(--red);border-color:var(--red);color:#fff}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.btn:hover{filter:brightness(1.08)}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0 20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
 figure{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:6px;overflow:hidden;position:relative}
 figure img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover}
-figcaption{padding:8px 12px;font-size:.95rem}
-figure .x{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.65);color:#fff;border:0;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:1rem}
+figcaption{padding:6px 8px}
+figcaption input{border:0;background:none;padding:4px}
+figure .x{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.65);color:#fff;border:0;border-radius:50%;width:30px;height:30px;cursor:pointer}
 .empty{color:var(--muted);border:1.5px dashed var(--line);border-radius:6px;padding:28px;text-align:center}
-.chips{display:flex;gap:8px;flex-wrap:wrap}
-.chip{border:1px solid var(--line);background:var(--chip);color:var(--ink);padding:4px 14px;border-radius:999px;cursor:pointer;font:inherit;font-size:.95rem}
-.chip[aria-pressed="true"]{background:var(--teal);color:var(--teal-ink);border-color:var(--teal)}
-form.note{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:18px;display:grid;gap:10px;margin-bottom:24px}
-form.note[hidden]{display:none}
 input,textarea,select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:9px 12px;width:100%}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-@media(max-width:600px){.row{grid-template-columns:1fr}}
 label{font-size:.9rem;color:var(--muted);display:block;margin-bottom:2px}
-.note-card{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:16px 18px;margin-bottom:14px}
-.note-card h3{font-size:1.5rem}
-.tag{font-size:.85rem;background:var(--chip);border-radius:999px;padding:1px 10px;margin-left:8px;vertical-align:middle;font-family:Hind,sans-serif}
-.note-card p{white-space:pre-wrap;margin:.5rem 0}
-.links a{display:block;margin:.2rem 0;word-break:break-all}
 .small{font-size:.9rem;color:var(--muted)}
+/* Notes workspace */
+.ws{display:grid;grid-template-columns:290px 1fr;border:1px solid var(--line);border-radius:8px;background:var(--surface);min-height:560px;overflow:hidden;margin-top:18px}
+@media(max-width:800px){.ws{grid-template-columns:1fr}.side{border-right:0!important;border-bottom:1px solid var(--line);max-height:300px}}
+.side{border-right:1px solid var(--line);background:var(--chip);display:flex;flex-direction:column;overflow-y:auto}
+.side .hd{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line);font:600 1.2rem "Cormorant Garamond",serif;position:sticky;top:0;background:var(--chip)}
+.hd button{font:500 .85rem Hind,sans-serif;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:6px;padding:3px 10px;cursor:pointer}
+.side ul{list-style:none;margin:0;padding:0}
+.tn{display:flex;align-items:center;gap:2px;padding-right:10px;border-left:3px solid transparent}
+.tn.on{background:var(--surface);border-left-color:var(--red)}
+.tn button{background:none;border:0;color:var(--ink);font:inherit;cursor:pointer}
+.tg{width:24px;height:34px;color:var(--muted);flex:none}
+.nm{flex:1;text-align:left;padding:5px 4px;font-size:.97rem}
+.ct{font-size:.8rem;color:var(--muted)}
+.pane{padding:22px 26px}
+.crumb{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.crumb h3{font-size:1.9rem}
+.acts{display:flex;gap:8px;flex-wrap:wrap}
+form.note{border:1px solid var(--line);border-radius:6px;padding:16px;display:grid;gap:10px;margin-bottom:20px;background:var(--bg)}
+form.note[hidden]{display:none}
+.nc{padding:14px 0;border-bottom:1px solid var(--line)}.nc:last-child{border:0}
+.nc h4{font:600 1.45rem "Cormorant Garamond",serif;margin:0}
+.nc p{white-space:pre-wrap;margin:.4rem 0}
+.tag{font:400 .8rem Hind,sans-serif;background:var(--chip);border-radius:999px;padding:1px 10px;margin-left:8px;vertical-align:middle}
+.links a{display:block;margin:.15rem 0;word-break:break-all;font-size:.95rem}
 .linkbtn{background:none;border:0;color:var(--red);cursor:pointer;font:inherit;font-size:.9rem;padding:0;margin-right:14px}
 footer{text-align:center;color:var(--muted);padding:24px;font-size:.9rem;border-top:1px solid var(--line)}
 </style>
 </head>
 <body>
-<header class="hero"><div class="wrap head">
+<header class="top"><div class="wrap">
+<div class="brand"><svg viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round" aria-hidden="true"><circle cx="100" cy="98" r="84"/><path d="M100 50v60M96 70Q76 68 62 54M104 70Q124 68 138 52M98 110Q96 138 92 162M104 110Q132 112 124 130"/></svg>Nruthyalya</div>
+<nav role="tablist">
+<button role="tab" aria-selected="true" data-t="about">About</button>
+<button role="tab" aria-selected="false" data-t="gallery">Gallery</button>
+<button role="tab" aria-selected="false" data-t="notes">Notes</button>
+</nav>
+<div class="soc"><a href="https://www.instagram.com/nruthyalya" target="_blank" rel="noopener">Instagram</a><a href="https://www.youtube.com/@nruthyalya" target="_blank" rel="noopener">YouTube</a></div>
+</div></header>
+
+<div class="hero"><div class="wrap head">
 <svg class="logo" role="img" aria-label="Nataraja, Lord of Dance" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
 <circle cx="100" cy="98" r="90" stroke-width="5" stroke-dasharray="0.1 9.4"/>
 <circle cx="100" cy="98" r="80" stroke-width="3"/>
@@ -92,21 +122,11 @@ footer{text-align:center;color:var(--muted);padding:24px;font-size:.9rem;border-
 <path d="M139 42l8 5-8 5zM155 42l-8 5 8 5z" fill="currentColor" stroke-width="1"/>
 <path d="M62 54c-8-4-7-11-4-17 1 5 5 6 5 10 1-2 2-3 2-5 4 5 3 10-3 12z" fill="currentColor" stroke-width="1"/>
 </svg>
-
 <div>
 <h1>Nruthyalya</h1>
-<div class="sub">School of Bharatanatyam · Bangalore</div>
+<div class="sub">School of Bharatanatyam, Bangalore</div>
 <p>Bharatanatyam and Carnatic music, taught as technique, sahitya and sadhana. Founded in 2013 by Ashwini Ravi.</p>
-<div class="btns">
-<a class="btn fill" href="https://www.instagram.com/nruthyalya" target="_blank" rel="noopener">Instagram</a>
-<a class="btn" href="https://www.youtube.com/@nruthyalya" target="_blank" rel="noopener">YouTube</a>
-</div></div></div></header>
-
-<nav><div class="wrap" role="tablist">
-<button role="tab" aria-selected="true" data-t="about">About</button>
-<button role="tab" aria-selected="false" data-t="gallery">Gallery</button>
-<button role="tab" aria-selected="false" data-t="notes">Notes</button>
-</div></nav>
+</div></div></div>
 
 <main><div class="wrap">
 
@@ -114,7 +134,7 @@ footer{text-align:center;color:var(--muted);padding:24px;font-size:.9rem;border-
 <div class="cols">
 <div>
 <h2>Ashwini Ravi</h2>
-<p class="small">Bharatanatyam dancer · Teacher · Artistic Director, Nruthyalya</p>
+<p class="lead">Bharatanatyam dancer, teacher and Artistic Director of Nruthyalya</p>
 <p>Ashwini Ravi is a Bharatanatyam dancer, teacher and choreographer with over two decades of rigorous training and performance experience. She began at the age of four under Guru Smt. Sunanda and continued advanced training for more than 20 years under Guru Prakash S. Iyer.</p>
 <p>She completed the Vidwat Examination (Karnataka Secondary Education Examination Board) with distinction and is a Doordarshan B-graded artiste. Her dance is marked by expressive abhinaya, a strong command of nritta, and the ability to carry deep emotion through storytelling.</p>
 <p>In 2013 she founded Nruthyalya School of Dance in Bangalore to promote India's traditional art forms. She presents traditional margams and thematic productions rooted in Sanatana Dharma, Bhakti poetry and classical literature. As a teacher she blends technique, sahitya, raga bhava and spiritual depth, so students experience Bharatanatyam as a sadhana, a path of inner growth and cultural continuity.</p>
@@ -133,7 +153,7 @@ footer{text-align:center;color:var(--muted);padding:24px;font-size:.9rem;border-
 <li>Nadaneerajanam, Thirumala</li>
 <li>Chennai and Kancheepuram</li>
 </ul>
-<h3 style="margin-top:1rem">Recognition</h3>
+<h3>Recognition</h3>
 <ul>
 <li>Dedicated Guru Award, Hidden Idol</li>
 <li>Dance Immersion programme curated by Guru Malavika Sarukkai</li>
@@ -144,9 +164,9 @@ footer{text-align:center;color:var(--muted);padding:24px;font-size:.9rem;border-
 
 <section id="gallery" hidden>
 <h2>Gallery</h2>
-<p class="small">Add photos from performances, classes and festivals. Photos are saved in this browser only.</p>
+<p class="small">Photos from performances, classes and festivals. Photos are saved in this browser only.</p>
 <div class="bar">
-<label class="btn red" for="up" style="margin:0;cursor:pointer">Add photos</label>
+<label class="btn red" for="up" style="margin:0;color:#fff;cursor:pointer">Add photos</label>
 <input id="up" type="file" accept="image/*" multiple hidden>
 </div>
 <div class="grid" id="grid"></div>
@@ -154,22 +174,24 @@ footer{text-align:center;color:var(--muted);padding:24px;font-size:.9rem;border-
 
 <section id="notes" hidden>
 <h2>Notes</h2>
-<p class="small">Keep class notes, choreography ideas and reference videos, sorted by category. Notes are saved in this browser only.</p>
-<div class="bar">
-<button class="btn red" id="newNote" type="button">New note</button>
-<div class="chips" id="filters"></div>
+<p class="small">Organise class notes, choreography and reference videos in nested folders. Notes are saved in this browser only.</p>
+<div class="ws">
+<div class="side">
+<div class="hd">Folders<button type="button" id="newF">New folder</button></div>
+<div id="tree"></div>
 </div>
+<div class="pane">
+<div class="crumb"><h3 id="ttl"></h3><div class="acts" id="acts"></div></div>
 <form class="note" id="form" hidden>
 <div><label for="nt">Title</label><input id="nt" required maxlength="120"></div>
-<div class="row">
-<div><label for="nc">Category</label><select id="nc"></select></div>
-<div><label for="nn">Or create a category</label><input id="nn" maxlength="40" placeholder="e.g. Varnam"></div>
-</div>
+<div><label for="nc">Folder</label><select id="nc"></select></div>
 <div><label for="nb">Note</label><textarea id="nb" rows="4"></textarea></div>
 <div><label for="nl">YouTube links, one per line</label><textarea id="nl" rows="3" placeholder="https://www.youtube.com/watch?v=..."></textarea></div>
-<div class="bar" style="margin:0"><button class="btn red" type="submit">Save note</button><button class="btn dark" type="button" id="cancel">Cancel</button></div>
+<div class="bar" style="margin:0"><button class="btn red" type="submit">Save note</button><button class="btn" type="button" id="cancel">Cancel</button></div>
 </form>
 <div id="list"></div>
+</div>
+</div>
 </section>
 
 </div></main>
@@ -182,7 +204,6 @@ function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}ca
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){alert('Storage is full. Delete some items and try again.');return false}}
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 
-// Tabs
 var tabs=document.querySelectorAll('nav button');
 tabs.forEach(function(b){b.addEventListener('click',function(){
 tabs.forEach(function(x){x.setAttribute('aria-selected',x===b)});
@@ -212,48 +233,83 @@ out.forEach(function(s){if(s)photos.unshift({src:s,cap:''})});
 save('nr_photos',photos);drawGallery();e.target.value=''})});
 drawGallery();
 
-// Notes
+// Notes: nested folders
 var notes=load('nr_notes',[]);
-var cats=load('nr_cats',['Choreography','Class notes','Music and sahitya']);
-var active='All';
-function drawCats(){
-$('#nc').innerHTML=cats.map(function(c){return '<option>'+esc(c)+'</option>'}).join('');
-var all=['All'].concat(cats);
-$('#filters').innerHTML=all.map(function(c){return '<button type="button" class="chip" aria-pressed="'+(c===active)+'" data-f="'+esc(c)+'">'+esc(c)+'</button>'}).join('');
+var folders=load('nr_folders',null);
+if(!folders){
+var oc=load('nr_cats',['Choreography','Class notes','Music and sahitya']);
+folders=oc.map(function(n,i){return {id:'f'+i,name:n,parent:null}});
+notes.forEach(function(n){var f=folders.filter(function(x){return x.name===n.cat})[0];n.folder=f?f.id:folders[0].id});
+save('nr_folders',folders);save('nr_notes',notes);
 }
-function ytLabel(u){return u.replace(/^https?:\/\/(www\.)?/,'')}
-function drawNotes(){
-var l=notes.filter(function(n){return active==='All'||n.cat===active});
-if(!l.length){$('#list').innerHTML='<div class="empty">'+(notes.length?'No notes in this category.':'No notes yet. Choose New note to add one.')+'</div>';return}
+var sel=null,open={},editing=null;
+function kids(p){return folders.filter(function(f){return f.parent===p})}
+function byId(id){return folders.filter(function(f){return f.id===id})[0]}
+function subtree(id){var o=[id];kids(id).forEach(function(k){o=o.concat(subtree(k.id))});return o}
+function count(id){var ids=subtree(id);return notes.filter(function(n){return ids.indexOf(n.folder)>-1}).length}
+function path(id){var o=[],f=byId(id);while(f){o.unshift(f.name);f=byId(f.parent)}return o.join(' / ')}
+function branch(p,d){return '<ul>'+kids(p).map(function(f){var k=kids(f.id).length;
+return '<li><div class="tn'+(sel===f.id?' on':'')+'" style="padding-left:'+(6+d*16)+'px"><button class="tg" data-tg="'+f.id+'" aria-label="Expand or collapse"'+(k?'':' disabled')+'>'+(k?(open[f.id]?'▾':'▸'):'')+'</button><button class="nm" data-s="'+f.id+'">'+esc(f.name)+'</button><span class="ct">'+count(f.id)+'</span></div>'+(k&&open[f.id]?branch(f.id,d+1):'')+'</li>'}).join('')+'</ul>'}
+function drawTree(){
+$('#tree').innerHTML='<div class="tn'+(sel===null?' on':'')+'"><span class="tg"></span><button class="nm" data-s="">All notes</button><span class="ct">'+notes.length+'</span></div>'+branch(null,0);
+var opts=[];(function w(p){kids(p).forEach(function(f){opts.push('<option value="'+f.id+'">'+esc(path(f.id))+'</option>');w(f.id)})})(null);
+$('#nc').innerHTML=opts.join('');
+}
+function drawPane(){
+$('#ttl').textContent=sel?path(sel):'All notes';
+$('#acts').innerHTML='<button class="btn red" data-a="note">New note</button>'+(sel?'<button class="btn" data-a="sub">New subfolder</button><button class="btn" data-a="ren">Rename</button><button class="btn" data-a="del">Delete folder</button>':'');
+var ids=sel?subtree(sel):null;
+var l=notes.filter(function(n){return !ids||ids.indexOf(n.folder)>-1});
+if(!l.length){$('#list').innerHTML='<div class="empty">'+(sel?'This folder has no notes yet. Choose New note to add one.':'No notes yet. Create a folder, then choose New note.')+'</div>';return}
 $('#list').innerHTML=l.map(function(n){
-var links=(n.links||[]).map(function(u){return '<a href="'+esc(u)+'" target="_blank" rel="noopener">▶ '+esc(ytLabel(u))+'</a>'}).join('');
-return '<article class="note-card"><h3>'+esc(n.title)+'<span class="tag">'+esc(n.cat)+'</span></h3>'+(n.body?'<p>'+esc(n.body)+'</p>':'')+(links?'<div class="links">'+links+'</div>':'')+'<div style="margin-top:8px"><span class="small">'+esc(n.date)+'</span> &nbsp; <button class="linkbtn" data-e="'+n.id+'">Edit</button><button class="linkbtn" data-d="'+n.id+'">Delete</button></div></article>'}).join('');
+var links=(n.links||[]).map(function(u){return '<a href="'+esc(u)+'" target="_blank" rel="noopener">▶ '+esc(u.replace(/^https?:\/\/(www\.)?/,''))+'</a>'}).join('');
+return '<article class="nc"><h4>'+esc(n.title)+'<span class="tag">'+esc(path(n.folder))+'</span></h4>'+(n.body?'<p>'+esc(n.body)+'</p>':'')+(links?'<div class="links">'+links+'</div>':'')+'<div style="margin-top:6px"><span class="small">'+esc(n.date||'')+'</span> &nbsp; <button class="linkbtn" data-e="'+n.id+'">Edit</button><button class="linkbtn" data-d="'+n.id+'">Delete</button></div></article>'}).join('');
 }
-$('#filters').addEventListener('click',function(e){if(e.target.dataset.f){active=e.target.dataset.f;drawCats();drawNotes()}});
-var editing=null;
+function draw(){drawTree();drawPane()}
+function addFolder(parent){
+var n=prompt(parent?'Name of the new subfolder':'Name of the new folder');
+if(!n||!n.trim())return;
+var f={id:'f'+Date.now(),name:n.trim().slice(0,40),parent:parent};
+folders.push(f);if(parent)open[parent]=true;sel=f.id;save('nr_folders',folders);draw();
+}
+$('#newF').addEventListener('click',function(){addFolder(null)});
+$('#tree').addEventListener('click',function(e){
+var t=e.target.closest('button');if(!t)return;
+if(t.dataset.tg){open[t.dataset.tg]=!open[t.dataset.tg];drawTree()}
+else if(t.dataset.s!==undefined){sel=t.dataset.s||null;if(sel&&kids(sel).length)open[sel]=true;$('#form').hidden=true;draw()}
+});
 function openForm(n){
+if(!folders.length){alert('Create a folder first, then add notes to it.');return}
 editing=n?n.id:null;$('#form').hidden=false;
-$('#nt').value=n?n.title:'';$('#nb').value=n?n.body:'';$('#nl').value=n?(n.links||[]).join('\n'):'';$('#nn').value='';
-if(n)$('#nc').value=n.cat;$('#nt').focus();
+$('#nt').value=n?n.title:'';$('#nb').value=n?n.body:'';$('#nl').value=n?(n.links||[]).join('\n'):'';
+$('#nc').value=n?n.folder:(sel||folders[0].id);$('#nt').focus();
 }
-$('#newNote').addEventListener('click',function(){openForm(null)});
+$('#acts').addEventListener('click',function(e){
+var a=e.target.dataset.a;if(!a)return;
+if(a==='note')openForm(null);
+if(a==='sub')addFolder(sel);
+if(a==='ren'){var n=prompt('Rename folder',byId(sel).name);if(n&&n.trim()){byId(sel).name=n.trim().slice(0,40);save('nr_folders',folders);draw()}}
+if(a==='del'){var ids=subtree(sel),c=count(sel);
+if(confirm('Delete "'+byId(sel).name+'"'+(kids(sel).length?', its subfolders':'')+' and '+c+' note'+(c===1?'':'s')+'?')){
+notes=notes.filter(function(n){return ids.indexOf(n.folder)<0});
+folders=folders.filter(function(f){return ids.indexOf(f.id)<0});
+sel=null;save('nr_notes',notes);save('nr_folders',folders);draw()}}
+});
 $('#cancel').addEventListener('click',function(){$('#form').hidden=true});
 $('#form').addEventListener('submit',function(e){
 e.preventDefault();
-var nc=$('#nn').value.trim(),cat=nc||$('#nc').value;
-if(nc&&cats.indexOf(nc)<0){cats.push(nc);save('nr_cats',cats)}
 var links=$('#nl').value.split('\n').map(function(s){return s.trim()}).filter(Boolean).map(function(s){return /^https?:\/\//i.test(s)?s:'https://'+s});
-var data={title:$('#nt').value.trim(),cat:cat,body:$('#nb').value.trim(),links:links};
+var data={title:$('#nt').value.trim(),folder:$('#nc').value,body:$('#nb').value.trim(),links:links};
 if(editing){notes=notes.map(function(n){return n.id===editing?Object.assign(n,data):n})}
 else{data.id=Date.now();data.date=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});notes.unshift(data)}
-save('nr_notes',notes);$('#form').hidden=true;active='All';drawCats();drawNotes();
+save('nr_notes',notes);$('#form').hidden=true;open[data.folder]=true;draw();
 });
 $('#list').addEventListener('click',function(e){
 var d=e.target.dataset.d,ed=e.target.dataset.e;
-if(d&&confirm('Delete this note?')){notes=notes.filter(function(n){return String(n.id)!==d});save('nr_notes',notes);drawNotes()}
-if(ed){openForm(notes.filter(function(n){return String(n.id)===ed})[0]);window.scrollTo({top:$('#notes').offsetTop,behavior:'smooth'})}
+if(d&&confirm('Delete this note?')){notes=notes.filter(function(n){return String(n.id)!==d});save('nr_notes',notes);draw()}
+if(ed){openForm(notes.filter(function(n){return String(n.id)===ed})[0])}
 });
-drawCats();drawNotes();
+draw();
 })();
 </script>
 </body>

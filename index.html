@@ -98,18 +98,19 @@
 <div class="ws">
   <div class="side">
     <div class="hd">Notes</div>
-    <ul id="catList"></ul>
+    <div class="side-search">
+      <input id="noteSearch" type="search" placeholder="Search notes…" aria-label="Search notes by title">
+    </div>
+    <div id="tree"></div>
   </div>
   <div class="pane">
     <div class="crumb"><h3 id="ttl">All notes</h3><div class="acts" id="acts"></div></div>
     <form class="note" id="form" hidden>
       <div><label for="nt">Title</label><input id="nt" required maxlength="120"></div>
-      <div><label for="nc">Category</label>
-        <select id="nc">
-          <option value="Class notes">Class notes</option>
-          <option value="Choreography">Choreography</option>
-          <option value="Music and Sahithya">Music and Sahithya</option>
-        </select>
+      <div>
+        <label for="nf">Folder</label>
+        <input id="nf" list="folderList" placeholder="e.g. Choreography/Alaripu" required autocomplete="off">
+        <datalist id="folderList"></datalist>
       </div>
       <div><label for="nb">Note</label><textarea id="nb" rows="4"></textarea></div>
       <div><label for="nl">YouTube links, one per line</label><textarea id="nl" rows="3" placeholder="https://www.youtube.com/watch?v=..."></textarea></div>
@@ -138,13 +139,18 @@ tabs.forEach(function(b){b.addEventListener('click',function(){
   ['about','gallery','notes'].forEach(function(id){$('#'+id).hidden=(id!==b.dataset.t)});
 })});
 
-// ── State (no localStorage — everything comes from notes.json) ──────────────
-var CATS=['All notes','Class notes','Choreography','Music and Sahithya'];
-var selCat='All notes'; // current sidebar selection
-var notes=[];           // all notes loaded from content/notes.json
-var photos=[];          // gallery photos loaded from content/notes.json
-var pendingImgs=[];     // data-URL previews for note being composed
-var editingId=null;     // id of note being edited (null = new)
+// ── State ───────────────────────────────────────────────────────────────────
+// Notes use a slash-delimited folder path, e.g. "Choreography/Alaripu".
+// TOP_CATS are the fixed root folders; sub-folders under them are free-form.
+var TOP_CATS=['Class notes','Choreography','Music and Sahithya'];
+var selPath=null;    // currently selected folder path (null = All notes)
+var selNoteId=null;  // when a leaf note is clicked, show only that note
+var searchQ='';      // current search string (lowercase)
+var openPaths={};    // which folder paths are expanded in the tree
+var notes=[];        // all notes loaded from content/notes.json
+var photos=[];       // gallery photos loaded from content/notes.json
+var pendingImgs=[];  // data-URL previews for note being composed
+var editingId=null;  // id of note being edited (null = new)
 
 // ── Gallery ─────────────────────────────────────────────────────────────────
 function drawGallery(){
@@ -175,57 +181,239 @@ $('#up').addEventListener('change',function(e){
     out.forEach(function(s){if(s)photos.unshift({src:s,cap:'',_new:true})});
     drawGallery();e.target.value=''})});
 
-// ── Notes sidebar ────────────────────────────────────────────────────────────
-function countCat(cat){
-  if(cat==='All notes')return notes.length;
-  return notes.filter(function(n){return n.category===cat}).length}
+// ── Folder-tree helpers ──────────────────────────────────────────────────────
 
-function drawSidebar(){
-  var html=CATS.map(function(cat){
-    return '<li><button class="'+(selCat===cat?'on':'')+'" data-cat="'+esc(cat)+'"><span>'+esc(cat)+'</span><span class="ct">'+countCat(cat)+'</span></button></li>'
-  }).join('');
-  $('#catList').innerHTML=html;
+// Return all unique folder paths present in notes (e.g. ["Choreography","Choreography/Alaripu"])
+function allFolderPaths(){
+  var set={};
+  // Always include top-level categories
+  TOP_CATS.forEach(function(c){set[c]=1});
+  notes.forEach(function(n){
+    var parts=(n.folder||'').split('/');
+    var acc='';
+    parts.forEach(function(p,i){
+      p=p.trim();if(!p)return;
+      acc=i===0?p:acc+'/'+p;
+      set[acc]=1;
+    });
+  });
+  return Object.keys(set).sort();
 }
 
-$('#catList').addEventListener('click',function(e){
-  var b=e.target.closest('button[data-cat]');
-  if(!b)return;
-  selCat=b.dataset.cat;
-  $('#form').hidden=true;
-  editingId=null;
-  pendingImgs=[];
+// Return immediate children folder names under a given parent path
+function childFolders(parentPath){
+  var paths=allFolderPaths();
+  var result=[];
+  paths.forEach(function(p){
+    if(parentPath===null){
+      // top-level: no slash
+      if(p.indexOf('/')<0)result.push(p);
+    }else{
+      // direct children: parentPath + '/' + one-segment
+      var prefix=parentPath+'/';
+      if(p.indexOf(prefix)===0){
+        var rest=p.slice(prefix.length);
+        if(rest&&rest.indexOf('/')<0)result.push(rest);
+      }
+    }
+  });
+  return result;
+}
+
+// Notes directly in a folder (exact match, not subtree)
+function notesInFolder(folderPath){
+  return notes.filter(function(n){
+    return (n.folder||'').toLowerCase()===(folderPath||'').toLowerCase();
+  });
+}
+
+// Notes in folder or any sub-folder (for counts)
+function notesInSubtree(folderPath){
+  var lc=(folderPath||'').toLowerCase();
+  return notes.filter(function(n){
+    var f=(n.folder||'').toLowerCase();
+    return f===lc||f.indexOf(lc+'/')===0;
+  });
+}
+
+// Breadcrumb label for a path
+function pathLabel(p){return p||'All notes'}
+
+// ── Search helpers ────────────────────────────────────────────────────────────
+function matchesSearch(n){
+  return !searchQ||n.title.toLowerCase().indexOf(searchQ)>-1;
+}
+
+// ── Sidebar tree rendering ───────────────────────────────────────────────────
+function renderFolder(folderPath,depth){
+  var name=folderPath?folderPath.split('/').pop():folderPath;
+  var children=childFolders(folderPath);
+  var directNotes=notesInFolder(folderPath);
+  var subtreeCount=notesInSubtree(folderPath).filter(matchesSearch).length;
+  var isOpen=!!openPaths[folderPath];
+  var isSelFolder=selPath===folderPath&&!selNoteId;
+  var indent=depth*14;
+
+  var html='<li>'
+    +'<div class="tree-row'+(isSelFolder?' on':'')+'" style="padding-left:'+(8+indent)+'px">'
+    +(children.length||directNotes.length
+      ?'<button class="tree-tog" data-tog="'+esc(folderPath||'')+'" aria-label="Toggle">'+(isOpen?'▾':'▸')+'</button>'
+      :'<span class="tree-tog-ph"></span>')
+    +'<button class="tree-label" data-fp="'+esc(folderPath||'')+'">'+esc(name)
+    +(subtreeCount?'<span class="ct"> '+subtreeCount+'</span>':'')
+    +'</button>'
+    +'</div>';
+
+  if(isOpen){
+    html+='<ul>';
+    // Sub-folders first
+    children.forEach(function(c){
+      html+=renderFolder(folderPath?folderPath+'/'+c:c,depth+1);
+    });
+    // Note leaves
+    directNotes.filter(matchesSearch).forEach(function(n){
+      var isSelNote=selNoteId===n.id;
+      html+='<li><div class="tree-row tree-note'+(isSelNote?' on':'')+'" style="padding-left:'+(8+indent+14+16)+'px">'
+        +'<button class="tree-note-btn" data-nid="'+n.id+'">'+esc(n.title)+'</button>'
+        +'</div></li>';
+    });
+    html+='</ul>';
+  }
+  html+='</li>';
+  return html;
+}
+
+function drawTree(){
+  // Search mode: flat list of matches
+  if(searchQ){
+    var matched=notes.filter(matchesSearch);
+    if(!matched.length){
+      $('#tree').innerHTML='<ul><li><span class="side-no-results">No notes match</span></li></ul>';
+      return;
+    }
+    $('#tree').innerHTML='<ul>'+matched.map(function(n){
+      var isSel=selNoteId===n.id;
+      return '<li><div class="tree-row tree-note'+(isSel?' on':'')+'">'
+        +'<button class="tree-note-btn" data-nid="'+n.id+'">'+esc(n.title)
+        +'<span class="ct"> '+esc(n.folder||'')+'</span></button>'
+        +'</div></li>';
+    }).join('')+'</ul>';
+    return;
+  }
+
+  // Normal tree: "All notes" root + top-level folders
+  var allCount=notes.filter(matchesSearch).length;
+  var isAllSel=selPath===null&&!selNoteId;
+  var html='<ul>'
+    +'<li><div class="tree-row'+(isAllSel?' on':'')+'" style="padding-left:8px">'
+    +'<span class="tree-tog-ph"></span>'
+    +'<button class="tree-label" data-fp="">All notes<span class="ct"> '+allCount+'</span></button>'
+    +'</div></li>';
+  TOP_CATS.forEach(function(cat){
+    // Only show top-level cats that have content or are always shown
+    html+=renderFolder(cat,0);
+  });
+  // Any extra top-level folder not in TOP_CATS (user-created)
+  childFolders(null).filter(function(f){return TOP_CATS.indexOf(f)<0}).forEach(function(f){
+    html+=renderFolder(f,0);
+  });
+  html+='</ul>';
+  $('#tree').innerHTML=html;
+
+  // Populate datalist for folder input in form
+  $('#folderList').innerHTML=allFolderPaths().map(function(p){
+    return '<option value="'+esc(p)+'">';
+  }).join('');
+}
+
+$('#tree').addEventListener('click',function(e){
+  var tog=e.target.closest('[data-tog]');
+  if(tog){
+    var fp=tog.dataset.tog;
+    openPaths[fp]=!openPaths[fp];
+    drawTree();
+    return;
+  }
+  var lbl=e.target.closest('[data-fp]');
+  if(lbl){
+    var fp=lbl.dataset.fp;
+    selPath=fp===''?null:fp;
+    selNoteId=null;
+    if(fp)openPaths[fp]=true;
+    $('#form').hidden=true;editingId=null;pendingImgs=[];
+    draw();
+    return;
+  }
+  var nb=e.target.closest('[data-nid]');
+  if(nb){
+    selNoteId=nb.dataset.nid;
+    var n=notes.find(function(x){return x.id===selNoteId});
+    if(n){selPath=n.folder||null;openPaths[selPath]=true;}
+    $('#form').hidden=true;editingId=null;pendingImgs=[];
+    draw();
+    return;
+  }
+});
+
+$('#noteSearch').addEventListener('input',function(){
+  searchQ=$('#noteSearch').value.trim().toLowerCase();
+  if(!searchQ){selNoteId=null;}
   draw();
 });
 
 // ── Notes pane ───────────────────────────────────────────────────────────────
 function drawPane(){
-  $('#ttl').textContent=selCat;
+  // Title
+  if(selNoteId){
+    var sn=notes.find(function(n){return n.id===selNoteId});
+    $('#ttl').textContent=sn?sn.title:'Note';
+  }else if(searchQ){
+    $('#ttl').textContent='Search: "'+$('#noteSearch').value.trim()+'"';
+  }else{
+    $('#ttl').textContent=selPath||'All notes';
+  }
+
   $('#acts').innerHTML='<button class="btn red" id="newNote">New note</button>';
   $('#newNote').addEventListener('click',function(){openForm(null)});
 
-  var list=selCat==='All notes'?notes:notes.filter(function(n){return n.category===selCat});
+  // Build note list
+  var list;
+  if(selNoteId){
+    list=notes.filter(function(n){return n.id===selNoteId});
+  }else if(searchQ){
+    list=notes.filter(matchesSearch);
+  }else if(selPath===null){
+    list=notes.slice(); // all notes
+  }else{
+    list=notesInSubtree(selPath).filter(matchesSearch);
+  }
+
   if(!list.length){
-    $('#list').innerHTML='<div class="empty">No notes in this category yet. Choose New note to add one.</div>';
+    var msg=searchQ?'No notes match "'+esc($('#noteSearch').value.trim())+'".':'No notes in this folder yet. Choose New note to add one.';
+    $('#list').innerHTML='<div class="empty">'+msg+'</div>';
     return;
   }
+
   $('#list').innerHTML=list.map(function(n){
     var links=(n.links||[]).map(function(u){return '<a href="'+esc(u)+'" target="_blank" rel="noopener">▶ '+esc(u.replace(/^https?:\/\/(www\.)?/,''))+'</a>'}).join('');
     var imgs=(n.images||[]).length?'<div class="imgs">'+n.images.map(function(s,i){return '<button type="button" class="ib" data-z="'+n.id+':'+i+'" aria-label="Enlarge image '+(i+1)+'"><img loading="lazy" src="'+IS(s)+'" alt="Note image '+(i+1)+'"></button>'}).join('')+'</div>':'';
-    return '<article class="nc"><h4>'+esc(n.title)+'<span class="tag">'+esc(n.category||'')+'</span></h4>'
+    return '<article class="nc">'
+      +'<h4>'+esc(n.title)+'<span class="tag">'+esc(n.folder||'')+'</span></h4>'
       +(n.body?'<p>'+esc(n.body)+'</p>':'')
-      +imgs+(links?'<div class="links">'+links+'</div>':'')
+      +imgs
+      +(links?'<div class="links">'+links+'</div>':'')
       +'<div style="margin-top:6px"><span class="small">'+esc(n.date||'')+'</span> &nbsp; '
       +'<button class="linkbtn" data-e="'+n.id+'">Edit</button>'
       +'<button class="linkbtn" data-d="'+n.id+'">Delete</button>'
-      +'</div></article>'
+      +'</div></article>';
   }).join('');
 }
 
 function draw(){
-  // Keep window refs current so sync.js always sees the latest arrays
   window._nrNotes=notes;
   window._nrPhotos=photos;
-  drawSidebar();drawPane();
+  drawTree();
+  drawPane();
 }
 
 // ── Note form ────────────────────────────────────────────────────────────────
@@ -236,7 +424,9 @@ function openForm(n){
   $('#nt').value=n?n.title:'';
   $('#nb').value=n?n.body:'';
   $('#nl').value=n?(n.links||[]).join('\n'):'';
-  $('#nc').value=n?(n.category||'Class notes'):(selCat==='All notes'?'Class notes':selCat);
+  // Pre-fill folder: use note's folder, or current selection, or first top-level
+  var defaultFolder=selPath||TOP_CATS[0];
+  $('#nf').value=n?(n.folder||defaultFolder):defaultFolder;
   $('#form').hidden=false;
   $('#nt').focus();
 }
@@ -254,18 +444,28 @@ $('#pv').addEventListener('click',function(e){var r=e.target.dataset.r;if(r!==un
 
 $('#form').addEventListener('submit',function(e){
   e.preventDefault();
+  var folder=$('#nf').value.trim()||TOP_CATS[0];
   var links=$('#nl').value.split('\n').map(function(s){return s.trim()}).filter(Boolean).map(function(s){return /^https?:\/\//i.test(s)?s:'https://'+s});
   var today=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
   if(editingId){
     notes=notes.map(function(n){
       if(n.id!==editingId)return n;
-      return Object.assign({},n,{title:$('#nt').value.trim(),category:$('#nc').value,body:$('#nb').value.trim(),links:links,images:pendingImgs.slice()});
+      return Object.assign({},n,{title:$('#nt').value.trim(),folder:folder,body:$('#nb').value.trim(),links:links,images:pendingImgs.slice()});
     });
   }else{
-    var nn={id:'n'+Date.now(),title:$('#nt').value.trim(),category:$('#nc').value,body:$('#nb').value.trim(),links:links,images:pendingImgs.slice(),date:today};
+    var nn={id:'n'+Date.now(),title:$('#nt').value.trim(),folder:folder,body:$('#nb').value.trim(),links:links,images:pendingImgs.slice(),date:today};
     notes.unshift(nn);
   }
-  selCat=$('#nc').value;
+  // Navigate to the saved note's folder, expand it
+  selPath=folder;
+  openPaths[folder]=true;
+  // Also open all parent paths
+  folder.split('/').reduce(function(acc,seg,i){
+    var p=i===0?seg:acc+'/'+seg;
+    openPaths[p]=true;
+    return p;
+  },'');
+  selNoteId=null;
   $('#form').hidden=true;editingId=null;pendingImgs=[];
   draw();
 });
@@ -293,12 +493,16 @@ fetch('content/notes.json',{cache:'no-cache'})
     photos=(d.gallery||[]).map(function(g){
       return typeof g==='string'?{src:g,cap:''}:{src:g.file||g.src||'',cap:g.caption||g.cap||''};
     });
-    // Notes: support both old folder-based schema and new category schema
+    // Notes: use folder path directly (supports nesting like "Choreography/Alaripu")
     notes=(d.notes||[]).map(function(n,i){
-      var cat=n.category||n.folder||'Class notes';
-      // Flatten legacy folder paths like "Class notes/Adavus" → "Class notes"
-      if(cat.indexOf('/')>-1)cat=cat.split('/')[0].trim();
-      return {id:n.id||('r'+i),title:n.title||'Untitled',category:cat,body:n.body||'',links:n.links||[],images:n.images||[],date:n.date||''};
+      // Support legacy "category" field as a top-level folder
+      var folder=n.folder||n.category||TOP_CATS[0];
+      return {id:n.id||('r'+i),title:n.title||'Untitled',folder:folder,body:n.body||'',links:n.links||[],images:n.images||[],date:n.date||''};
+    });
+    // Open top-level cats that have content by default
+    TOP_CATS.forEach(function(c){
+      if(notes.some(function(n){return n.folder===c||n.folder.indexOf(c+'/')===0}))
+        openPaths[c]=true;
     });
     draw();
     drawGallery();

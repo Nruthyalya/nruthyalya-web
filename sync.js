@@ -1,78 +1,140 @@
-/* Nruthyalya: show repo content to everyone, and publish browser changes to GitHub */
+/* Nruthyalya — Publish notes and photos to GitHub
+ *
+ * No localStorage. All data lives in content/notes.json and images/.
+ * The page's in-memory `notes` and `photos` arrays (owned by index.html)
+ * are the only runtime store. Publish commits them straight to GitHub.
+ */
 (function(){
-var REPO='Nruthyalya/nruthyalya-web',BR='main',API='https://api.github.com/repos/'+REPO+'/contents/',TK='nr_gh_token';
-function ld(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
-function sv(k,v){localStorage.setItem(k,JSON.stringify(v))}
-function hs(s){var n=5381;for(var i=0;i<s.length;i++)n=((n<<5)+n+s.charCodeAt(i))>>>0;return n}
-function im(s){return /^(data:|https?:|images\/)/.test(s)?s:'images/'+s}
+var REPO='Nruthyalya/nruthyalya-web', BR='main';
+var API='https://api.github.com/repos/'+REPO+'/contents/';
+var TK_KEY='nr_gh_token'; // one allowed localStorage key: the auth token only
 
-/* 1. Merge content/notes.json from the repo into this browser before the page draws */
-try{
-  var x=new XMLHttpRequest();x.open('GET','content/notes.json?t='+Date.now(),false);x.send();
-  if(x.status===200){
-    var r=JSON.parse(x.responseText),F=ld('nr_folders',null)||[],N=ld('nr_notes',[]),P=ld('nr_photos',[]);
-    (r.folders||[]).forEach(function(f){if(!F.some(function(g){return g.id===f.id}))F.push(f)});
-    var fid=function(p){var par=null;p.split('/').forEach(function(nm){nm=nm.trim();if(!nm)return;
-      var id='p:'+(par||'')+'/'+nm;if(!F.some(function(f){return f.id===id}))F.push({id:id,name:nm,parent:par});par=id});return par};
-    (r.notes||[]).forEach(function(n){
-      if(!n.id)n.id=hs(n.title||'');
-      if(N.some(function(m){return String(m.id)===String(n.id)}))return;
-      if(!F.some(function(f){return f.id===n.folder}))n.folder=fid(String(n.folder||'Notes'));
-      n.links=n.links||[];n.images=(n.images||[]).map(im);N.push(n)});
-    (r.photos||[]).forEach(function(p){
-      if(typeof p==='string')p={src:p,cap:''};p.src=im(p.src);
-      if(!P.some(function(q){return q.src===p.src}))P.push(p)});
-    if(F.length)sv('nr_folders',F);sv('nr_notes',N);sv('nr_photos',P);
+function tok(){return localStorage.getItem(TK_KEY)||''}
+
+function gh(path,opts){
+  opts=opts||{};
+  opts.headers=Object.assign({Authorization:'Bearer '+tok(),Accept:'application/vnd.github+json'},opts.headers||{});
+  return fetch(API+path,opts).then(function(r){
+    return r.json().then(function(j){
+      if(!r.ok){var e=new Error(j.message||('HTTP '+r.status));e.status=r.status;throw e}
+      return j})})
+}
+
+function getSha(path){
+  return gh(path+'?ref='+BR).then(function(j){return j.sha}).catch(function(e){if(e.status===404)return null;throw e})
+}
+
+function putFile(path,base64,msg,sha){
+  var body={message:msg,content:base64,branch:BR};
+  if(sha)body.sha=sha;
+  return gh(path,{method:'PUT',body:JSON.stringify(body)})
+}
+
+/* Upload a data: URI as an image file; return the images/filename path */
+var _imgCounter=0;
+function uploadImage(dataUrl){
+  var name='images/'+Date.now()+'-'+(++_imgCounter)+'.jpg';
+  var base64=dataUrl.split(',')[1];
+  return putFile(name,base64,'Add image').then(function(){return name})
+}
+
+/* Replace every data: URI in an array with an uploaded path */
+async function uploadImages(arr,onProgress){
+  var result=[];
+  for(var i=0;i<arr.length;i++){
+    var s=arr[i];
+    if(/^data:/.test(s)){s=await uploadImage(s);if(onProgress)onProgress()}
+    result.push(s);
   }
-}catch(e){}
+  return result;
+}
 
-/* 2. Publish to GitHub */
-function tok(){return localStorage.getItem(TK)||''}
-function gh(path,o){o=o||{};o.headers={Authorization:'Bearer '+tok(),Accept:'application/vnd.github+json'};
-  return fetch(API+path,o).then(function(r){return r.json().then(function(j){
-    if(!r.ok){var e=new Error(j.message||('Error '+r.status));e.status=r.status;throw e}return j})})}
-function put(path,b64,msg,sha){var b={message:msg,content:b64,branch:BR};if(sha)b.sha=sha;
-  return gh(path,{method:'PUT',body:JSON.stringify(b)})}
-var cnt=0;
-async function up(s,tick){
-  if(!/^data:/.test(s))return s;
-  var name='images/'+Date.now()+'-'+(cnt++)+'.jpg';
-  await put(name,s.split(',')[1],'Add image');tick();return name}
-async function publish(btn){
-  var F=ld('nr_folders',[]),N=ld('nr_notes',[]),P=ld('nr_photos',[]),total=0,done=0;
-  var count=function(s){if(/^data:/.test(s))total++};
-  N.forEach(function(n){(n.images||[]).forEach(count)});P.forEach(function(p){count(p.src)});
-  var tick=function(){done++;btn.textContent='Uploading '+done+' of '+total+'...'};
-  btn.textContent='Publishing...';
-  for(var n of N){var o=[];for(var s of (n.images||[]))o.push(await up(s,tick));n.images=o}
-  for(var p of P)p.src=await up(p.src,tick);
-  var sha;try{sha=(await gh('content/notes.json?ref='+BR)).sha}catch(e){if(e.status!==404)throw e}
-  var json=JSON.stringify({folders:F,notes:N,photos:P},null,1);
-  await put('content/notes.json',btoa(unescape(encodeURIComponent(json))),'Update site content',sha);
-  sv('nr_folders',F);sv('nr_notes',N);sv('nr_photos',P);
-  alert('Published. The live site updates in about a minute. This page will now reload.');
+/* Main publish routine — called with the live notes/photos arrays from the page */
+async function publish(btn,notes,photos){
+  // Count data: URIs to upload
+  var total=0;
+  notes.forEach(function(n){(n.images||[]).forEach(function(s){if(/^data:/.test(s))total++})});
+  photos.forEach(function(p){if(/^data:/.test(p.src))total++});
+  var done=0;
+  function tick(){done++;btn.textContent='Uploading '+(done)+' of '+total+' image'+(total===1?'':'s')+'…'}
+
+  btn.textContent='Publishing…';
+
+  // Upload all inline images
+  var processedNotes=[];
+  for(var i=0;i<notes.length;i++){
+    var n=Object.assign({},notes[i]);
+    n.images=await uploadImages(n.images||[],tick);
+    // Strip internal-only flags
+    delete n._new;
+    processedNotes.push(n);
+  }
+
+  var processedPhotos=[];
+  for(var i=0;i<photos.length;i++){
+    var p=Object.assign({},photos[i]);
+    if(/^data:/.test(p.src)){p.src=await uploadImage(p.src);if(total)tick()}
+    delete p._new;
+    processedPhotos.push(p);
+  }
+
+  // Build notes.json
+  var json=JSON.stringify({notes:processedNotes,gallery:processedPhotos},null,2);
+  var sha=await getSha('content/notes.json');
+  var b64=btoa(unescape(encodeURIComponent(json)));
+  await putFile('content/notes.json',b64,'Update notes and gallery',sha);
+
+  // Update the page's live arrays so they reflect the committed state
+  // (replace data: URIs with the now-committed image paths)
+  for(var i=0;i<notes.length;i++)notes[i].images=processedNotes[i].images;
+  for(var i=0;i<photos.length;i++){photos[i].src=processedPhotos[i].src;delete photos[i]._new}
+
+  alert('Published! The live site updates in about a minute. The page will now reload.');
   location.reload();
 }
-function askToken(){
-  var t=prompt('Paste your GitHub token (leave empty to remove the saved one).');
-  if(t===null)return false;
-  t=t.trim();if(t)localStorage.setItem(TK,t);else localStorage.removeItem(TK);return !!t}
 
+/* ── UI ── */
 var box=document.createElement('div');
 box.style.cssText='position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:15;display:flex;gap:8px;align-items:center';
-box.innerHTML='<button class="btn red" type="button" id="pubB">Publish to site</button><button class="btn" type="button" id="pubT" title="Change or remove the GitHub token">Token</button>';
+box.innerHTML='<button class="btn red" type="button" id="pubB">Publish to site</button>'
+  +'<button class="btn" type="button" id="pubT" title="Set or remove your GitHub token">Token</button>';
 document.body.appendChild(box);
-var B=document.getElementById('pubB');
-document.getElementById('pubT').addEventListener('click',askToken);
-B.addEventListener('click',async function(){
-  if(!tok()&&!askToken())return;
-  if(!confirm('Publish all notes and photos in this browser to the website?'))return;
-  B.disabled=true;
-  try{await publish(B)}
-  catch(e){
-    alert(e.status===401?'GitHub did not accept the token. Use the Token button to paste a new one.':
-      (e.status===403||e.status===404)?'The token cannot write to this repository. It needs Contents: Read and write on nruthyalya-web.':
-      'Publishing failed: '+e.message)}
-  B.disabled=false;B.textContent='Publish to site';
+
+document.getElementById('pubT').addEventListener('click',function(){
+  var t=prompt('Paste your GitHub personal access token (leave empty to remove the saved one).');
+  if(t===null)return;
+  t=t.trim();
+  if(t)localStorage.setItem(TK_KEY,t);
+  else localStorage.removeItem(TK_KEY);
 });
+
+var B=document.getElementById('pubB');
+B.addEventListener('click',async function(){
+  if(!tok()){
+    var t=prompt('Paste your GitHub personal access token to publish.');
+    if(!t||!t.trim())return;
+    localStorage.setItem(TK_KEY,t.trim());
+  }
+  if(!confirm('Publish all notes and photos to the website?'))return;
+
+  // Access the page's live data via window globals exposed by index.html
+  var notes=window._nrNotes||[];
+  var photos=window._nrPhotos||[];
+  if(!notes.length&&!photos.length){alert('Nothing to publish yet.');return}
+
+  B.disabled=true;
+  try{
+    await publish(B,notes,photos);
+  }catch(e){
+    var msg=e.status===401
+      ?'GitHub did not accept the token. Use the Token button to update it.'
+      :(e.status===403||e.status===404)
+      ?'The token cannot write to this repository. It needs Contents: Read and write on nruthyalya-web.'
+      :'Publishing failed: '+e.message;
+    alert(msg);
+  }
+  B.disabled=false;
+  B.textContent='Publish to site';
+});
+
 })();

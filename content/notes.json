@@ -1,13 +1,28 @@
 {
   "notes": [
     {
+      "id": "n1790843218579",
+      "title": "Tishra Alaripu",
+      "category": "Choreography",
+      "body": "",
+      "links": [
+        "https://youtu.be/7MXSQtXIAMw?si=AWP5Wz7RPH65BLnn"
+      ],
+      "images": [
+        "images/1790843235593-1.jpg"
+      ],
+      "date": "1 Oct 2026"
+    },
+    {
       "id": "r0",
       "title": "Tatta adavu: practice notes",
       "category": "Class notes",
-      "date": "1 Oct 2026",
       "body": "Tatta adavu Practice videos",
+      "links": [
+        "https://www.youtube.com/@nruthyalya"
+      ],
       "images": [],
-      "links": ["https://www.youtube.com/@nruthyalya"]
+      "date": "1 Oct 2026"
     }
   ],
   "gallery": []

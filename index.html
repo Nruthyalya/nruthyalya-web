@@ -87,6 +87,17 @@ form.note[hidden]{display:none}
 .tag{font:400 .8rem Hind,sans-serif;background:var(--chip);border-radius:999px;padding:1px 10px;margin-left:8px;vertical-align:middle}
 .links a{display:block;margin:.15rem 0;word-break:break-all;font-size:.95rem}
 .linkbtn{background:none;border:0;color:var(--red);cursor:pointer;font:inherit;font-size:.9rem;padding:0;margin-right:14px}
+.imgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin:.6rem 0}
+.ib{padding:0;border:1px solid var(--line);border-radius:6px;background:var(--bg);cursor:zoom-in;overflow:hidden}
+.ib img{display:block;width:100%;max-height:340px;object-fit:contain}
+.pv{display:flex;gap:10px;flex-wrap:wrap}
+.pv span{position:relative}.pv img{height:84px;border:1px solid var(--line);border-radius:6px;display:block}
+.pv button{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;border:0;background:var(--red);color:#fff;cursor:pointer;line-height:1}
+#lb{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.88);overflow:auto;display:flex;padding:24px}
+#lb[hidden]{display:none}
+#lb img{margin:auto;max-width:100%;max-height:100%;cursor:zoom-in}
+#lb.full img{max-width:none;max-height:none;cursor:zoom-out}
+#lb .c{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:16px;background:#fff;color:#000;border:0;border-radius:6px;padding:6px 14px;cursor:pointer;font:500 .95rem Hind,sans-serif}
 footer{text-align:center;color:var(--muted);padding:24px;font-size:.9rem;border-top:1px solid var(--line)}
 </style>
 </head>
@@ -155,7 +166,7 @@ footer{text-align:center;color:var(--muted);padding:24px;font-size:.9rem;border-
 </ul>
 <h3>Recognition</h3>
 <ul>
-<li>Grade from Doordarshan</li>
+<li>Graded By Doordarshan</li>
 <li>Dedicated Guru Award, Hidden Idol</li>
 <li>Dance Immersion programme curated by Guru Malavika Sarukkai</li>
 </ul>
@@ -188,6 +199,7 @@ footer{text-align:center;color:var(--muted);padding:24px;font-size:.9rem;border-
 <div><label for="nc">Folder</label><select id="nc"></select></div>
 <div><label for="nb">Note</label><textarea id="nb" rows="4"></textarea></div>
 <div><label for="nl">YouTube links, one per line</label><textarea id="nl" rows="3" placeholder="https://www.youtube.com/watch?v=..."></textarea></div>
+<div><label for="ni">Images (photos of handwritten notes, diagrams, sheets)</label><input id="ni" type="file" accept="image/*" multiple><div class="pv" id="pv" style="margin-top:8px"></div></div>
 <div class="bar" style="margin:0"><button class="btn red" type="submit">Save note</button><button class="btn" type="button" id="cancel">Cancel</button></div>
 </form>
 <div id="list"></div>
@@ -196,6 +208,7 @@ footer{text-align:center;color:var(--muted);padding:24px;font-size:.9rem;border-
 </section>
 
 </div></main>
+<div id="lb" hidden><button class="c" type="button">Close</button><img alt="Enlarged note image"></div>
 <footer>© Nruthyalya School of Dance, Bangalore</footer>
 
 <script>
@@ -220,16 +233,16 @@ g.innerHTML=photos.map(function(p,i){return '<figure><img src="'+p.src+'" alt="'
 }
 $('#grid').addEventListener('click',function(e){var i=e.target.dataset.i;if(i!==undefined&&confirm('Delete this photo?')){photos.splice(+i,1);save('nr_photos',photos);drawGallery()}});
 $('#grid').addEventListener('change',function(e){var i=e.target.dataset.c;if(i!==undefined){photos[+i].cap=e.target.value;save('nr_photos',photos)}});
-function shrink(file){return new Promise(function(res){
+function shrink(file,m){return new Promise(function(res){
 var r=new FileReader();
 r.onload=function(){var im=new Image();im.onload=function(){
-var m=900,s=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement('canvas');
+var s=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement('canvas');
 c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);
 c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.72))};
 im.onerror=function(){res(null)};im.src=r.result};
 r.onerror=function(){res(null)};r.readAsDataURL(file)})}
 $('#up').addEventListener('change',function(e){
-Promise.all(Array.prototype.map.call(e.target.files,shrink)).then(function(out){
+Promise.all(Array.prototype.map.call(e.target.files,function(f){return shrink(f,900)})).then(function(out){
 out.forEach(function(s){if(s)photos.unshift({src:s,cap:''})});
 save('nr_photos',photos);drawGallery();e.target.value=''})});
 drawGallery();
@@ -243,7 +256,7 @@ folders=oc.map(function(n,i){return {id:'f'+i,name:n,parent:null}});
 notes.forEach(function(n){var f=folders.filter(function(x){return x.name===n.cat})[0];n.folder=f?f.id:folders[0].id});
 save('nr_folders',folders);save('nr_notes',notes);
 }
-var sel=null,open={},editing=null;
+var sel=null,open={},editing=null,pending=[];
 function kids(p){return folders.filter(function(f){return f.parent===p})}
 function byId(id){return folders.filter(function(f){return f.id===id})[0]}
 function subtree(id){var o=[id];kids(id).forEach(function(k){o=o.concat(subtree(k.id))});return o}
@@ -264,7 +277,8 @@ var l=notes.filter(function(n){return !ids||ids.indexOf(n.folder)>-1});
 if(!l.length){$('#list').innerHTML='<div class="empty">'+(sel?'This folder has no notes yet. Choose New note to add one.':'No notes yet. Create a folder, then choose New note.')+'</div>';return}
 $('#list').innerHTML=l.map(function(n){
 var links=(n.links||[]).map(function(u){return '<a href="'+esc(u)+'" target="_blank" rel="noopener">▶ '+esc(u.replace(/^https?:\/\/(www\.)?/,''))+'</a>'}).join('');
-return '<article class="nc"><h4>'+esc(n.title)+'<span class="tag">'+esc(path(n.folder))+'</span></h4>'+(n.body?'<p>'+esc(n.body)+'</p>':'')+(links?'<div class="links">'+links+'</div>':'')+'<div style="margin-top:6px"><span class="small">'+esc(n.date||'')+'</span> &nbsp; <button class="linkbtn" data-e="'+n.id+'">Edit</button><button class="linkbtn" data-d="'+n.id+'">Delete</button></div></article>'}).join('');
+var imgs=(n.images||[]).length?'<div class="imgs">'+n.images.map(function(s,i){return '<button type="button" class="ib" data-z="'+n.id+':'+i+'" aria-label="Enlarge image '+(i+1)+'"><img src="'+s+'" alt="Note image '+(i+1)+'"></button>'}).join('')+'</div>':'';
+return '<article class="nc"><h4>'+esc(n.title)+'<span class="tag">'+esc(path(n.folder))+'</span></h4>'+(n.body?'<p>'+esc(n.body)+'</p>':'')+imgs+(links?'<div class="links">'+links+'</div>':'')+'<div style="margin-top:6px"><span class="small">'+esc(n.date||'')+'</span> &nbsp; <button class="linkbtn" data-e="'+n.id+'">Edit</button><button class="linkbtn" data-d="'+n.id+'">Delete</button></div></article>'}).join('');
 }
 function draw(){drawTree();drawPane()}
 function addFolder(parent){
@@ -281,7 +295,7 @@ else if(t.dataset.s!==undefined){sel=t.dataset.s||null;if(sel&&kids(sel).length)
 });
 function openForm(n){
 if(!folders.length){alert('Create a folder first, then add notes to it.');return}
-editing=n?n.id:null;$('#form').hidden=false;
+editing=n?n.id:null;$('#form').hidden=false;pending=n?(n.images||[]).slice():[];drawPending();
 $('#nt').value=n?n.title:'';$('#nb').value=n?n.body:'';$('#nl').value=n?(n.links||[]).join('\n'):'';
 $('#nc').value=n?n.folder:(sel||folders[0].id);$('#nt').focus();
 }
@@ -296,16 +310,27 @@ notes=notes.filter(function(n){return ids.indexOf(n.folder)<0});
 folders=folders.filter(function(f){return ids.indexOf(f.id)<0});
 sel=null;save('nr_notes',notes);save('nr_folders',folders);draw()}}
 });
+function drawPending(){$('#pv').innerHTML=pending.map(function(s,i){return '<span><img src="'+s+'" alt="Attached image '+(i+1)+'"><button type="button" data-r="'+i+'" aria-label="Remove image">×</button></span>'}).join('')}
+$('#ni').addEventListener('change',function(e){
+Promise.all(Array.prototype.map.call(e.target.files,function(f){return shrink(f,1600)})).then(function(out){
+out.forEach(function(s){if(s)pending.push(s)});drawPending();e.target.value=''})});
+$('#pv').addEventListener('click',function(e){var r=e.target.dataset.r;if(r!==undefined){pending.splice(+r,1);drawPending()}});
+var lb=$('#lb');
+function closeLb(){lb.hidden=true;lb.classList.remove('full')}
+lb.addEventListener('click',function(e){if(e.target.tagName==='IMG')lb.classList.toggle('full');else closeLb()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeLb()});
 $('#cancel').addEventListener('click',function(){$('#form').hidden=true});
 $('#form').addEventListener('submit',function(e){
 e.preventDefault();
 var links=$('#nl').value.split('\n').map(function(s){return s.trim()}).filter(Boolean).map(function(s){return /^https?:\/\//i.test(s)?s:'https://'+s});
-var data={title:$('#nt').value.trim(),folder:$('#nc').value,body:$('#nb').value.trim(),links:links};
+var data={title:$('#nt').value.trim(),folder:$('#nc').value,body:$('#nb').value.trim(),links:links,images:pending.slice()};
 if(editing){notes=notes.map(function(n){return n.id===editing?Object.assign(n,data):n})}
 else{data.id=Date.now();data.date=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});notes.unshift(data)}
 save('nr_notes',notes);$('#form').hidden=true;open[data.folder]=true;draw();
 });
 $('#list').addEventListener('click',function(e){
+var z=e.target.closest('[data-z]');
+if(z){var pr=z.dataset.z.split(':'),nn=notes.filter(function(n){return String(n.id)===pr[0]})[0];lb.querySelector('img').src=nn.images[+pr[1]];lb.hidden=false;return}
 var d=e.target.dataset.d,ed=e.target.dataset.e;
 if(d&&confirm('Delete this note?')){notes=notes.filter(function(n){return String(n.id)!==d});save('nr_notes',notes);draw()}
 if(ed){openForm(notes.filter(function(n){return String(n.id)===ed})[0])}

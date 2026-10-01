@@ -3,37 +3,27 @@
     {
       "id": "n1790843689692",
       "title": "Chathurashra Alaripu",
-      "category": "Choreography",
+      "folder": "Choreography/Alaripu",
       "body": "",
-      "links": [
-        "https://youtu.be/gbUHXOCZdiw?si=JJzDQjxkzLWlCfP1"
-      ],
-      "images": [
-        "images/1790843695667-1.jpg"
-      ],
+      "links": ["https://youtu.be/gbUHXOCZdiw?si=JJzDQjxkzLWlCfP1"],
+      "images": ["images/1790843695667-1.jpg"],
       "date": "1 Oct 2026"
     },
     {
       "id": "n1790843218579",
       "title": "Tishra Alaripu",
-      "category": "Choreography",
+      "folder": "Choreography/Alaripu",
       "body": "",
-      "links": [
-        "https://youtu.be/7MXSQtXIAMw?si=AWP5Wz7RPH65BLnn"
-      ],
-      "images": [
-        "images/1790843235593-1.jpg"
-      ],
+      "links": ["https://youtu.be/7MXSQtXIAMw?si=AWP5Wz7RPH65BLnn"],
+      "images": ["images/1790843235593-1.jpg"],
       "date": "1 Oct 2026"
     },
     {
       "id": "r0",
       "title": "Tatta adavu: practice notes",
-      "category": "Class notes",
+      "folder": "Class notes",
       "body": "Tatta adavu Practice videos",
-      "links": [
-        "https://www.youtube.com/@nruthyalya"
-      ],
+      "links": ["https://www.youtube.com/@nruthyalya"],
       "images": [],
       "date": "1 Oct 2026"
     }

@@ -4,103 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Nruthyalya School of Dance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Hind:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#F5F4F0;--surface:#fff;--ink:#1c2326;--muted:#5d6a6d;--line:#dcd8cf;--teal:#0E3B3D;--teal-ink:#F3EBD6;--red:#A81E2B;--gold:#C8962E;--chip:#ece8dd;
-box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1517;--surface:#152123;--ink:#ece7da;--muted:#98a6a8;--line:#27393b;--teal:#081f21;--red:#e0525d;--gold:#dcab4a;--chip:#1d2f31}}
-:root[data-theme="dark"]{--bg:#0d1517;--surface:#152123;--ink:#ece7da;--muted:#98a6a8;--line:#27393b;--teal:#081f21;--red:#e0525d;--gold:#dcab4a;--chip:#1d2f31}
-html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.65 Hind,system-ui,sans-serif}
-h1,h2,h3{font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;line-height:1.15;margin:0}
-a{color:var(--red)}
-:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
-.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
-header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--teal);color:var(--teal-ink);border-bottom:3px solid var(--gold)}
-header.top .wrap{display:flex;align-items:center;gap:20px;min-height:60px;flex-wrap:wrap}
-.brand{display:flex;align-items:center;gap:10px;font:700 1.55rem "Cormorant Garamond",serif;color:var(--teal-ink);margin-right:auto}
-.brand svg{width:30px;height:30px;color:var(--gold)}
-nav{display:flex;gap:4px}
-nav button{border:0;background:none;font:500 1rem Hind,sans-serif;color:#cfc8b4;padding:19px 16px 16px;border-bottom:3px solid transparent;margin-bottom:-3px;cursor:pointer}
-nav button[aria-selected="true"]{color:#fff;border-bottom-color:var(--gold)}
-nav button:hover{color:#fff}
-.soc a{color:var(--teal-ink);font-size:.95rem;margin-left:14px;text-decoration:none;border-bottom:1px solid var(--gold)}
-.hero{background:var(--teal);color:var(--teal-ink);padding:56px 0 60px}
-.head{display:flex;align-items:center;gap:48px}
-.logo{width:clamp(130px,20vw,200px);flex:none;color:var(--gold)}
-@media(max-width:640px){.head{flex-direction:column;align-items:flex-start;gap:20px}}
-.hero h1{font-size:clamp(3rem,9vw,5rem);font-weight:700}
-.hero .sub{font-family:"Cormorant Garamond",serif;font-style:italic;font-size:1.5rem;color:var(--gold);margin:.3rem 0 1rem}
-.hero p{max-width:54ch;margin:0;color:#d9d3c0}
-main{padding:44px 0 80px}
-section[hidden]{display:none}
-h2{font-size:2.4rem;margin-bottom:.4rem}
-.cols{display:grid;grid-template-columns:1.7fr 1fr;gap:56px}
-@media(max-width:800px){.cols{grid-template-columns:1fr;gap:28px}}
-.lead{color:var(--muted);margin:0 0 1.2rem}
-.cols p{max-width:68ch}
-.facts{border-top:3px solid var(--gold);padding-top:14px;align-self:start}
-.facts h3{font-size:1.5rem;margin-bottom:.4rem}
-.facts ul{margin:0 0 1.4rem;padding:0;list-style:none}
-.facts li{padding:8px 0;border-bottom:1px solid var(--line)}
-.stats{display:flex;gap:0;margin:1.6rem 0 0;border:1px solid var(--line);border-radius:6px;background:var(--surface);max-width:560px}
-.stats div{flex:1;padding:16px 20px;border-right:1px solid var(--line)}.stats div:last-child{border:0}
-.stats b{display:block;font:700 2.2rem "Cormorant Garamond",serif;color:var(--red);line-height:1.1}
-.stats span{color:var(--muted);font-size:.9rem}
-.btn{display:inline-block;padding:8px 18px;border-radius:6px;border:1px solid var(--line);color:var(--ink);background:var(--surface);cursor:pointer;font:500 .95rem Hind,sans-serif;text-decoration:none}
-.btn.red{background:var(--red);border-color:var(--red);color:#fff}
-.btn:hover{filter:brightness(1.08)}
-.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0 20px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
-figure{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:6px;overflow:hidden;position:relative}
-figure img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover}
-figcaption{padding:6px 8px}
-figcaption input{border:0;background:none;padding:4px}
-figure .x{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.65);color:#fff;border:0;border-radius:50%;width:30px;height:30px;cursor:pointer}
-.empty{color:var(--muted);border:1.5px dashed var(--line);border-radius:6px;padding:28px;text-align:center}
-input,textarea,select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:9px 12px;width:100%}
-label{font-size:.9rem;color:var(--muted);display:block;margin-bottom:2px}
-.small{font-size:.9rem;color:var(--muted)}
-/* Notes workspace */
-.ws{display:grid;grid-template-columns:290px 1fr;border:1px solid var(--line);border-radius:8px;background:var(--surface);min-height:560px;overflow:hidden;margin-top:18px}
-@media(max-width:800px){.ws{grid-template-columns:1fr}.side{border-right:0!important;border-bottom:1px solid var(--line);max-height:300px}}
-.side{border-right:1px solid var(--line);background:var(--chip);display:flex;flex-direction:column;overflow-y:auto}
-.side .hd{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line);font:600 1.2rem "Cormorant Garamond",serif;position:sticky;top:0;background:var(--chip)}
-.hd button{font:500 .85rem Hind,sans-serif;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:6px;padding:3px 10px;cursor:pointer}
-.side ul{list-style:none;margin:0;padding:0}
-.tn{display:flex;align-items:center;gap:2px;padding-right:10px;border-left:3px solid transparent}
-.tn.on{background:var(--surface);border-left-color:var(--red)}
-.tn button{background:none;border:0;color:var(--ink);font:inherit;cursor:pointer}
-.tg{width:24px;height:34px;color:var(--muted);flex:none}
-.nm{flex:1;text-align:left;padding:5px 4px;font-size:.97rem}
-.ct{font-size:.8rem;color:var(--muted)}
-.pane{padding:22px 26px}
-.crumb{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--line)}
-.crumb h3{font-size:1.9rem}
-.acts{display:flex;gap:8px;flex-wrap:wrap}
-form.note{border:1px solid var(--line);border-radius:6px;padding:16px;display:grid;gap:10px;margin-bottom:20px;background:var(--bg)}
-form.note[hidden]{display:none}
-.nc{padding:14px 0;border-bottom:1px solid var(--line)}.nc:last-child{border:0}
-.nc h4{font:600 1.45rem "Cormorant Garamond",serif;margin:0}
-.nc p{white-space:pre-wrap;margin:.4rem 0}
-.tag{font:400 .8rem Hind,sans-serif;background:var(--chip);border-radius:999px;padding:1px 10px;margin-left:8px;vertical-align:middle}
-.links a{display:block;margin:.15rem 0;word-break:break-all;font-size:.95rem}
-.linkbtn{background:none;border:0;color:var(--red);cursor:pointer;font:inherit;font-size:.9rem;padding:0;margin-right:14px}
-.imgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin:.6rem 0}
-.ib{padding:0;border:1px solid var(--line);border-radius:6px;background:var(--bg);cursor:zoom-in;overflow:hidden}
-.ib img{display:block;width:100%;max-height:340px;object-fit:contain}
-.pv{display:flex;gap:10px;flex-wrap:wrap}
-.pv span{position:relative}.pv img{height:84px;border:1px solid var(--line);border-radius:6px;display:block}
-.pv button{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;border:0;background:var(--red);color:#fff;cursor:pointer;line-height:1}
-#lb{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.88);overflow:auto;display:flex;padding:24px}
-#lb[hidden]{display:none}
-#lb img{margin:auto;max-width:100%;max-height:100%;cursor:zoom-in}
-#lb.full img{max-width:none;max-height:none;cursor:zoom-out}
-#lb .c{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:16px;background:#fff;color:#000;border:0;border-radius:6px;padding:6px 14px;cursor:pointer;font:500 .95rem Hind,sans-serif}
-.leaf .nm{font-size:.92rem;color:var(--muted)}.leaf.on .nm{color:var(--ink)}#tree .nm{line-height:1.3}.sq{padding:10px 12px;border-bottom:1px solid var(--line)}
-footer{text-align:center;color:var(--muted);padding:24px;font-size:.9rem;border-top:1px solid var(--line)}
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header class="top"><div class="wrap">
@@ -136,7 +43,7 @@ footer{text-align:center;color:var(--muted);padding:24px;font-size:.9rem;border-
 </svg>
 <div>
 <h1>Nruthyalya</h1>
-<div class="sub">School of Bharatanatyam, Bangalore</div>
+<div class="sub">School of Bharatanatyam, Bengaluru</div>
 <p>Bharatanatyam and Carnatic music, taught as technique, sahitya and sadhana. Founded in 2013 by Ashwini Ravi.</p>
 </div></div></div>
 
@@ -146,7 +53,7 @@ footer{text-align:center;color:var(--muted);padding:24px;font-size:.9rem;border-
 <div class="cols">
 <div>
 <h2>Ashwini Ravi</h2>
-<p class="lead">Bharatanatyam dancer, teacher and Artistic Director of Nruthyalya</p>
+<p class="lead">Bharatanatyam dancer, teacher, Artistic Director of Nruthyalya</p>
 <p>Ashwini Ravi is a Bharatanatyam dancer, teacher and choreographer with over two decades of rigorous training and performance experience. She began at the age of four under Guru Smt. Sunanda and continued advanced training for more than 20 years under Guru Prakash S. Iyer.</p>
 <p>She completed the Vidwat Examination (Karnataka Secondary Education Examination Board) with distinction and is a Doordarshan B-graded artiste. Her dance is marked by expressive abhinaya, a strong command of nritta, and the ability to carry deep emotion through storytelling.</p>
 <p>In 2013 she founded Nruthyalya School of Dance in Bangalore to promote India's traditional art forms. She presents traditional margams and thematic productions rooted in Sanatana Dharma, Bhakti poetry and classical literature. As a teacher she blends technique, sahitya, raga bhava and spiritual depth, so students experience Bharatanatyam as a sadhana, a path of inner growth and cultural continuity.</p>
@@ -177,7 +84,7 @@ footer{text-align:center;color:var(--muted);padding:24px;font-size:.9rem;border-
 
 <section id="gallery" hidden>
 <h2>Gallery</h2>
-<p class="small">Photos from performances, classes and festivals. Photos added here stay in this browser; photos listed in content/notes.json show for everyone.</p>
+<p class="small">Photos from performances, classes and festivals. Use the Publish button to save new photos for everyone.</p>
 <div class="bar">
 <label class="btn red" for="up" style="margin:0;color:#fff;cursor:pointer">Add photos</label>
 <input id="up" type="file" accept="image/*" multiple hidden>
@@ -187,184 +94,223 @@ footer{text-align:center;color:var(--muted);padding:24px;font-size:.9rem;border-
 
 <section id="notes" hidden>
 <h2>Notes</h2>
-<p class="small">Class notes, choreography and reference videos in nested folders. Notes added here stay in this browser; notes in content/notes.json show for everyone.</p>
+<p class="small">Class notes, choreography and reference videos. Use the Publish button to save new notes for everyone.</p>
 <div class="ws">
-<div class="side">
-<div class="hd">Folders<button type="button" id="newF">New folder</button></div>
-<div class="sq"><input id="q" type="search" placeholder="Search notes by title" aria-label="Search notes by title"></div>
-<div id="tree"></div>
-</div>
-<div class="pane">
-<div class="crumb"><h3 id="ttl"></h3><div class="acts" id="acts"></div></div>
-<form class="note" id="form" hidden>
-<div><label for="nt">Title</label><input id="nt" required maxlength="120"></div>
-<div><label for="nc">Folder</label><select id="nc"></select></div>
-<div><label for="nb">Note</label><textarea id="nb" rows="4"></textarea></div>
-<div><label for="nl">YouTube links, one per line</label><textarea id="nl" rows="3" placeholder="https://www.youtube.com/watch?v=..."></textarea></div>
-<div><label for="ni">Images (photos of handwritten notes, diagrams, sheets)</label><input id="ni" type="file" accept="image/*" multiple><div class="pv" id="pv" style="margin-top:8px"></div></div>
-<div class="bar" style="margin:0"><button class="btn red" type="submit">Save note</button><button class="btn" type="button" id="cancel">Cancel</button></div>
-</form>
-<div id="list"></div>
-</div>
+  <div class="side">
+    <div class="hd">Notes</div>
+    <ul id="catList"></ul>
+  </div>
+  <div class="pane">
+    <div class="crumb"><h3 id="ttl">All notes</h3><div class="acts" id="acts"></div></div>
+    <form class="note" id="form" hidden>
+      <div><label for="nt">Title</label><input id="nt" required maxlength="120"></div>
+      <div><label for="nc">Category</label>
+        <select id="nc">
+          <option value="Class notes">Class notes</option>
+          <option value="Choreography">Choreography</option>
+          <option value="Music and Sahithya">Music and Sahithya</option>
+        </select>
+      </div>
+      <div><label for="nb">Note</label><textarea id="nb" rows="4"></textarea></div>
+      <div><label for="nl">YouTube links, one per line</label><textarea id="nl" rows="3" placeholder="https://www.youtube.com/watch?v=..."></textarea></div>
+      <div><label for="ni">Images (photos of handwritten notes, diagrams, sheets)</label><input id="ni" type="file" accept="image/*" multiple><div class="pv" id="pv" style="margin-top:8px"></div></div>
+      <div class="bar" style="margin:0"><button class="btn red" type="submit">Save note</button><button class="btn" type="button" id="cancel">Cancel</button></div>
+    </form>
+    <div id="list"></div>
+  </div>
 </div>
 </section>
 
 </div></main>
 <div id="lb" hidden><button class="c" type="button">Close</button><img alt="Enlarged note image"></div>
-<footer>© Nruthyalya School of Dance, Bangalore</footer>
+<footer>© Nruthyalya School of Dance, Bengaluru</footer>
 
 <script>
 (function(){
 var $=function(s){return document.querySelector(s)};
-function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
-function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){alert('Storage is full. Delete some items and try again.');return false}}
-function saveN(){save('nr_notes',notes.filter(function(n){return !n.ro}))}
-function saveF(){save('nr_folders',folders.filter(function(f){return !f.ro}))}
-function saveP(){save('nr_photos',photos.filter(function(p){return !p.ro}))}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function IS(s){return /^(data:|https?:|images\/)/.test(s)?s:'images/'+s}
-function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 
+// ── Tab navigation ──────────────────────────────────────────────────────────
 var tabs=document.querySelectorAll('nav button');
 tabs.forEach(function(b){b.addEventListener('click',function(){
-tabs.forEach(function(x){x.setAttribute('aria-selected',x===b)});
-['about','gallery','notes'].forEach(function(id){$('#'+id).hidden=(id!==b.dataset.t)});
+  tabs.forEach(function(x){x.setAttribute('aria-selected',x===b)});
+  ['about','gallery','notes'].forEach(function(id){$('#'+id).hidden=(id!==b.dataset.t)});
 })});
 
-// Gallery
-var photos=load('nr_photos',[]);
-function drawGallery(){
-var g=$('#grid');
-if(!photos.length){g.innerHTML='<div class="empty" style="grid-column:1/-1">No photos yet. Choose Add photos to start the gallery.</div>';return}
-g.innerHTML=photos.map(function(p,i){return '<figure><img src="'+p.src+'" alt="'+esc(p.cap||'Gallery photo')+'">'+(p.ro?'':'<button class="x" data-i="'+i+'" aria-label="Delete photo">×</button>')+'<figcaption>'+(p.ro?esc(p.cap||''):'<input data-c="'+i+'" value="'+esc(p.cap||'')+'" placeholder="Add a caption" aria-label="Caption">')+'</figcaption></figure>'}).join('');
-}
-$('#grid').addEventListener('click',function(e){var i=e.target.dataset.i;if(i!==undefined&&confirm('Delete this photo?')){photos.splice(+i,1);saveP();drawGallery()}});
-$('#grid').addEventListener('change',function(e){var i=e.target.dataset.c;if(i!==undefined){photos[+i].cap=e.target.value;saveP()}});
-function shrink(file,m){return new Promise(function(res){
-var r=new FileReader();
-r.onload=function(){var im=new Image();im.onload=function(){
-var s=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement('canvas');
-c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);
-c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.72))};
-im.onerror=function(){res(null)};im.src=r.result};
-r.onerror=function(){res(null)};r.readAsDataURL(file)})}
-$('#up').addEventListener('change',function(e){
-Promise.all(Array.prototype.map.call(e.target.files,function(f){return shrink(f,900)})).then(function(out){
-out.forEach(function(s){if(s)photos.unshift({src:s,cap:''})});
-saveP();drawGallery();e.target.value=''})});
-drawGallery();
+// ── State (no localStorage — everything comes from notes.json) ──────────────
+var CATS=['All notes','Class notes','Choreography','Music and Sahithya'];
+var selCat='All notes'; // current sidebar selection
+var notes=[];           // all notes loaded from content/notes.json
+var photos=[];          // gallery photos loaded from content/notes.json
+var pendingImgs=[];     // data-URL previews for note being composed
+var editingId=null;     // id of note being edited (null = new)
 
-// Notes: nested folders
-var notes=load('nr_notes',[]);
-var folders=load('nr_folders',null);
-if(!folders){
-var oc=load('nr_cats',['Choreography','Class notes','Music and sahitya']);
-folders=oc.map(function(n,i){return {id:'f'+i,name:n,parent:null}});
-notes.forEach(function(n){var f=folders.filter(function(x){return x.name===n.cat})[0];n.folder=f?f.id:folders[0].id});
-saveF();saveN();
+// ── Gallery ─────────────────────────────────────────────────────────────────
+function drawGallery(){
+  window._nrPhotos=photos;
+  var g=$('#grid');
+  if(!photos.length){g.innerHTML='<div class="empty" style="grid-column:1/-1">No photos yet. Choose Add photos to start the gallery.</div>';return}
+  g.innerHTML=photos.map(function(p,i){
+    return '<figure><img src="'+IS(p.src)+'" alt="'+esc(p.cap||'Gallery photo')+'">'
+      +(p._new?'<button class="x" data-i="'+i+'" aria-label="Delete photo">×</button>':'')
+      +'<figcaption>'+(p._new?'<input data-c="'+i+'" value="'+esc(p.cap||'')+'" placeholder="Add a caption" aria-label="Caption">':esc(p.cap||''))
+      +'</figcaption></figure>'}).join('');
 }
-var sel=null,selN=null,open={},editing=null,pending=[];
-function kids(p){return folders.filter(function(f){return f.parent===p})}
-function byId(id){return folders.filter(function(f){return f.id===id})[0]}
-function subtree(id){var o=[id];kids(id).forEach(function(k){o=o.concat(subtree(k.id))});return o}
-function count(id){var ids=subtree(id);return notes.filter(function(n){return ids.indexOf(n.folder)>-1}).length}
-function path(id){var o=[],f=byId(id);while(f){o.unshift(f.name);f=byId(f.parent)}return o.join(' / ')}
-function nIn(id){return notes.filter(function(n){return n.folder===id})}
-function openUp(id){var f=byId(id);while(f){open[f.id]=true;f=byId(f.parent)}}
-function branch(p,d){
-var pad='padding-left:'+(6+d*16)+'px';
-var h=kids(p).map(function(f){var k=kids(f.id).length+nIn(f.id).length;
-return '<li><div class="tn'+(sel===f.id&&!selN?' on':'')+'" style="'+pad+'"><button class="tg" data-tg="'+f.id+'" aria-label="Expand or collapse"'+(k?'':' disabled')+'>'+(k?(open[f.id]?'▾':'▸'):'')+'</button><button class="nm" data-s="'+f.id+'">'+esc(f.name)+'</button><span class="ct">'+count(f.id)+'</span></div>'+(open[f.id]?branch(f.id,d+1):'')+'</li>'}).join('');
-h+=nIn(p).map(function(n){return '<li><div class="tn leaf'+(selN===n.id?' on':'')+'" style="'+pad+'"><span class="tg"></span><button class="nm" data-n="'+n.id+'">'+esc(n.title)+'</button></div></li>'}).join('');
-return '<ul>'+h+'</ul>'}
-function branchOld(p,d){return '<ul>'+kids(p).map(function(f){var k=kids(f.id).length;
-return '<li><div class="tn'+(sel===f.id?' on':'')+'" style="padding-left:'+(6+d*16)+'px"><button class="tg" data-tg="'+f.id+'" aria-label="Expand or collapse"'+(k?'':' disabled')+'>'+(k?(open[f.id]?'▾':'▸'):'')+'</button><button class="nm" data-s="'+f.id+'">'+esc(f.name)+'</button><span class="ct">'+count(f.id)+'</span></div>'+(k&&open[f.id]?branch(f.id,d+1):'')+'</li>'}).join('')+'</ul>'}
-function drawTree(){
-var q=$('#q').value.trim().toLowerCase();
-if(q){var r=notes.filter(function(n){return n.title.toLowerCase().indexOf(q)>-1});
-$('#tree').innerHTML=r.length?'<ul>'+r.map(function(n){return '<li><div class="tn'+(selN===n.id?' on':'')+'"><button class="nm" data-n="'+n.id+'">'+esc(n.title)+'<br><span class="ct">'+esc(path(n.folder))+'</span></button></div></li>'}).join('')+'</ul>':'<div class="empty" style="margin:12px">No notes match this title.</div>'}
-else $('#tree').innerHTML='<div class="tn'+(sel===null&&!selN?' on':'')+'"><span class="tg"></span><button class="nm" data-s="">All notes</button><span class="ct">'+notes.length+'</span></div>'+branch(null,0);
-var opts=[];(function w(p){kids(p).forEach(function(f){opts.push('<option value="'+f.id+'">'+esc(path(f.id))+'</option>');w(f.id)})})(null);
-$('#nc').innerHTML=opts.join('');
+$('#grid').addEventListener('click',function(e){
+  var i=e.target.dataset.i;
+  if(i!==undefined&&confirm('Remove this photo? (It will be removed when you publish.)')){photos.splice(+i,1);drawGallery()}
+});
+$('#grid').addEventListener('change',function(e){var i=e.target.dataset.c;if(i!==undefined)photos[+i].cap=e.target.value});
+function shrink(file,m){return new Promise(function(res){
+  var r=new FileReader();
+  r.onload=function(){var im=new Image();im.onload=function(){
+    var s=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement('canvas');
+    c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);
+    c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.72))};
+    im.onerror=function(){res(null)};im.src=r.result};
+  r.onerror=function(){res(null)};r.readAsDataURL(file)})}
+$('#up').addEventListener('change',function(e){
+  Promise.all(Array.prototype.map.call(e.target.files,function(f){return shrink(f,900)})).then(function(out){
+    out.forEach(function(s){if(s)photos.unshift({src:s,cap:'',_new:true})});
+    drawGallery();e.target.value=''})});
+
+// ── Notes sidebar ────────────────────────────────────────────────────────────
+function countCat(cat){
+  if(cat==='All notes')return notes.length;
+  return notes.filter(function(n){return n.category===cat}).length}
+
+function drawSidebar(){
+  var html=CATS.map(function(cat){
+    return '<li><button class="'+(selCat===cat?'on':'')+'" data-cat="'+esc(cat)+'"><span>'+esc(cat)+'</span><span class="ct">'+countCat(cat)+'</span></button></li>'
+  }).join('');
+  $('#catList').innerHTML=html;
 }
+
+$('#catList').addEventListener('click',function(e){
+  var b=e.target.closest('button[data-cat]');
+  if(!b)return;
+  selCat=b.dataset.cat;
+  $('#form').hidden=true;
+  editingId=null;
+  pendingImgs=[];
+  draw();
+});
+
+// ── Notes pane ───────────────────────────────────────────────────────────────
 function drawPane(){
-$('#ttl').textContent=sel?path(sel):'All notes';
-$('#acts').innerHTML='<button class="btn red" data-a="note">New note</button>'+(sel?'<button class="btn" data-a="sub">New subfolder</button>'+(byId(sel).ro?'':'<button class="btn" data-a="ren">Rename</button><button class="btn" data-a="del">Delete folder</button>'):'');
-var ids=sel?subtree(sel):null;
-var l=notes.filter(function(n){return selN?n.id===selN:(!ids||ids.indexOf(n.folder)>-1)});
-if(!l.length){$('#list').innerHTML='<div class="empty">'+(sel?'This folder has no notes yet. Choose New note to add one.':'No notes yet. Create a folder, then choose New note.')+'</div>';return}
-$('#list').innerHTML=l.map(function(n){
-var links=(n.links||[]).map(function(u){return '<a href="'+esc(u)+'" target="_blank" rel="noopener">▶ '+esc(u.replace(/^https?:\/\/(www\.)?/,''))+'</a>'}).join('');
-var imgs=(n.images||[]).length?'<div class="imgs">'+n.images.map(function(s,i){return '<button type="button" class="ib" data-z="'+n.id+':'+i+'" aria-label="Enlarge image '+(i+1)+'"><img loading="lazy" src="'+IS(s)+'" alt="Note image '+(i+1)+'"></button>'}).join('')+'</div>':'';
-return '<article class="nc"><h4>'+esc(n.title)+'<span class="tag">'+esc(path(n.folder))+'</span></h4>'+(n.body?'<p>'+esc(n.body)+'</p>':'')+imgs+(links?'<div class="links">'+links+'</div>':'')+'<div style="margin-top:6px"><span class="small">'+esc(n.date||'')+'</span> &nbsp; '+(n.ro?'<span class="small">Published</span>':'<button class="linkbtn" data-e="'+n.id+'">Edit</button><button class="linkbtn" data-d="'+n.id+'">Delete</button>')+'</div></article>'}).join('');
+  $('#ttl').textContent=selCat;
+  $('#acts').innerHTML='<button class="btn red" id="newNote">New note</button>';
+  $('#newNote').addEventListener('click',function(){openForm(null)});
+
+  var list=selCat==='All notes'?notes:notes.filter(function(n){return n.category===selCat});
+  if(!list.length){
+    $('#list').innerHTML='<div class="empty">No notes in this category yet. Choose New note to add one.</div>';
+    return;
+  }
+  $('#list').innerHTML=list.map(function(n){
+    var links=(n.links||[]).map(function(u){return '<a href="'+esc(u)+'" target="_blank" rel="noopener">▶ '+esc(u.replace(/^https?:\/\/(www\.)?/,''))+'</a>'}).join('');
+    var imgs=(n.images||[]).length?'<div class="imgs">'+n.images.map(function(s,i){return '<button type="button" class="ib" data-z="'+n.id+':'+i+'" aria-label="Enlarge image '+(i+1)+'"><img loading="lazy" src="'+IS(s)+'" alt="Note image '+(i+1)+'"></button>'}).join('')+'</div>':'';
+    return '<article class="nc"><h4>'+esc(n.title)+'<span class="tag">'+esc(n.category||'')+'</span></h4>'
+      +(n.body?'<p>'+esc(n.body)+'</p>':'')
+      +imgs+(links?'<div class="links">'+links+'</div>':'')
+      +'<div style="margin-top:6px"><span class="small">'+esc(n.date||'')+'</span> &nbsp; '
+      +'<button class="linkbtn" data-e="'+n.id+'">Edit</button>'
+      +'<button class="linkbtn" data-d="'+n.id+'">Delete</button>'
+      +'</div></article>'
+  }).join('');
 }
-function draw(){drawTree();drawPane()}
-function addFolder(parent){
-var n=prompt(parent?'Name of the new subfolder':'Name of the new folder');
-if(!n||!n.trim())return;
-var f={id:'f'+Date.now(),name:n.trim().slice(0,40),parent:parent};
-folders.push(f);if(parent)open[parent]=true;sel=f.id;selN=null;saveF();draw();
+
+function draw(){
+  // Keep window refs current so sync.js always sees the latest arrays
+  window._nrNotes=notes;
+  window._nrPhotos=photos;
+  drawSidebar();drawPane();
 }
-$('#q').addEventListener('input',drawTree);
-$('#newF').addEventListener('click',function(){addFolder(null)});
-$('#tree').addEventListener('click',function(e){
-var t=e.target.closest('button');if(!t)return;
-if(t.dataset.tg){open[t.dataset.tg]=!open[t.dataset.tg];drawTree()}
-else if(t.dataset.n!==undefined){var nn=notes.filter(function(n){return String(n.id)===t.dataset.n})[0];selN=nn.id;sel=nn.folder;openUp(sel);$('#form').hidden=true;draw()}
-else if(t.dataset.s!==undefined){sel=t.dataset.s||null;selN=null;if(sel)open[sel]=true;$('#form').hidden=true;draw()}
-});
+
+// ── Note form ────────────────────────────────────────────────────────────────
 function openForm(n){
-if(!folders.length){alert('Create a folder first, then add notes to it.');return}
-editing=n?n.id:null;$('#form').hidden=false;pending=n?(n.images||[]).slice():[];drawPending();
-$('#nt').value=n?n.title:'';$('#nb').value=n?n.body:'';$('#nl').value=n?(n.links||[]).join('\n'):'';
-$('#nc').value=n?n.folder:(sel||folders[0].id);$('#nt').focus();
+  editingId=n?n.id:null;
+  pendingImgs=n?(n.images||[]).slice():[];
+  drawPending();
+  $('#nt').value=n?n.title:'';
+  $('#nb').value=n?n.body:'';
+  $('#nl').value=n?(n.links||[]).join('\n'):'';
+  $('#nc').value=n?(n.category||'Class notes'):(selCat==='All notes'?'Class notes':selCat);
+  $('#form').hidden=false;
+  $('#nt').focus();
 }
-$('#acts').addEventListener('click',function(e){
-var a=e.target.dataset.a;if(!a)return;
-if(a==='note')openForm(null);
-if(a==='sub')addFolder(sel);
-if(a==='ren'){var n=prompt('Rename folder',byId(sel).name);if(n&&n.trim()){byId(sel).name=n.trim().slice(0,40);saveF();draw()}}
-if(a==='del'){var ids=subtree(sel),c=count(sel);
-if(confirm('Delete "'+byId(sel).name+'"'+(kids(sel).length?', its subfolders':'')+' and '+c+' note'+(c===1?'':'s')+'?')){
-notes=notes.filter(function(n){return ids.indexOf(n.folder)<0});
-folders=folders.filter(function(f){return ids.indexOf(f.id)<0});
-sel=null;selN=null;saveN();saveF();draw()}}
-});
-function drawPending(){$('#pv').innerHTML=pending.map(function(s,i){return '<span><img src="'+s+'" alt="Attached image '+(i+1)+'"><button type="button" data-r="'+i+'" aria-label="Remove image">×</button></span>'}).join('')}
+$('#cancel').addEventListener('click',function(){$('#form').hidden=true;editingId=null;pendingImgs=[]});
+
+function drawPending(){
+  $('#pv').innerHTML=pendingImgs.map(function(s,i){
+    return '<span><img src="'+IS(s)+'" alt="Attached image '+(i+1)+'"><button type="button" data-r="'+i+'" aria-label="Remove image">×</button></span>'
+  }).join('');
+}
 $('#ni').addEventListener('change',function(e){
-Promise.all(Array.prototype.map.call(e.target.files,function(f){return shrink(f,1600)})).then(function(out){
-out.forEach(function(s){if(s)pending.push(s)});drawPending();e.target.value=''})});
-$('#pv').addEventListener('click',function(e){var r=e.target.dataset.r;if(r!==undefined){pending.splice(+r,1);drawPending()}});
+  Promise.all(Array.prototype.map.call(e.target.files,function(f){return shrink(f,1600)})).then(function(out){
+    out.forEach(function(s){if(s)pendingImgs.push(s)});drawPending();e.target.value=''})});
+$('#pv').addEventListener('click',function(e){var r=e.target.dataset.r;if(r!==undefined){pendingImgs.splice(+r,1);drawPending()}});
+
+$('#form').addEventListener('submit',function(e){
+  e.preventDefault();
+  var links=$('#nl').value.split('\n').map(function(s){return s.trim()}).filter(Boolean).map(function(s){return /^https?:\/\//i.test(s)?s:'https://'+s});
+  var today=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+  if(editingId){
+    notes=notes.map(function(n){
+      if(n.id!==editingId)return n;
+      return Object.assign({},n,{title:$('#nt').value.trim(),category:$('#nc').value,body:$('#nb').value.trim(),links:links,images:pendingImgs.slice()});
+    });
+  }else{
+    var nn={id:'n'+Date.now(),title:$('#nt').value.trim(),category:$('#nc').value,body:$('#nb').value.trim(),links:links,images:pendingImgs.slice(),date:today};
+    notes.unshift(nn);
+  }
+  selCat=$('#nc').value;
+  $('#form').hidden=true;editingId=null;pendingImgs=[];
+  draw();
+});
+
+$('#list').addEventListener('click',function(e){
+  var z=e.target.closest('[data-z]');
+  if(z){var pr=z.dataset.z.split(':'),nn=notes.find(function(n){return String(n.id)===pr[0]});
+    if(nn){$('#lb').querySelector('img').src=IS(nn.images[+pr[1]]);$('#lb').hidden=false}return}
+  var d=e.target.dataset.d,ed=e.target.dataset.e;
+  if(d&&confirm('Delete this note?')){notes=notes.filter(function(n){return String(n.id)!==d});draw()}
+  if(ed){openForm(notes.find(function(n){return String(n.id)===ed}))}
+});
+
+// ── Lightbox ─────────────────────────────────────────────────────────────────
 var lb=$('#lb');
 function closeLb(){lb.hidden=true;lb.classList.remove('full')}
 lb.addEventListener('click',function(e){if(e.target.tagName==='IMG')lb.classList.toggle('full');else closeLb()});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeLb()});
-$('#cancel').addEventListener('click',function(){$('#form').hidden=true});
-$('#form').addEventListener('submit',function(e){
-e.preventDefault();
-var links=$('#nl').value.split('\n').map(function(s){return s.trim()}).filter(Boolean).map(function(s){return /^https?:\/\//i.test(s)?s:'https://'+s});
-var data={title:$('#nt').value.trim(),folder:$('#nc').value,body:$('#nb').value.trim(),links:links,images:pending.slice()};
-if(editing){notes=notes.map(function(n){return n.id===editing?Object.assign(n,data):n})}
-else{data.id=Date.now();data.date=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});notes.unshift(data)}
-saveN();$('#form').hidden=true;$('#q').value='';openUp(data.folder);sel=data.folder;selN=editing||data.id;draw();
-});
-$('#list').addEventListener('click',function(e){
-var z=e.target.closest('[data-z]');
-if(z){var pr=z.dataset.z.split(':'),nn=notes.filter(function(n){return String(n.id)===pr[0]})[0];lb.querySelector('img').src=IS(nn.images[+pr[1]]);lb.hidden=false;return}
-var d=e.target.dataset.d,ed=e.target.dataset.e;
-if(d&&confirm('Delete this note?')){notes=notes.filter(function(n){return String(n.id)!==d});selN=null;saveN();draw()}
-if(ed){openForm(notes.filter(function(n){return String(n.id)===ed})[0])}
-});
-draw();
-fetch('content/notes.json',{cache:'no-cache'}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){
-var map={},rf=[],rn=[];
-function ensure(p){var par=null,f=null,acc='';String(p).split('/').forEach(function(x){x=x.trim();if(!x)return;acc+='/'+x;if(!map[acc]){map[acc]={id:'p'+rf.length,name:x,parent:par,ro:1};rf.push(map[acc])}f=map[acc];par=f.id});return f}
-(d.folders||[]).forEach(ensure);
-(d.notes||[]).forEach(function(n,i){var f=ensure(n.folder||'General')||ensure('General');rn.push({id:'r'+i,title:n.title||'Untitled',folder:f.id,body:n.body||'',links:n.links||[],images:n.images||[],date:n.date||'',ro:1})});
-folders=rf.concat(folders);notes=rn.concat(notes);
-photos=(d.gallery||[]).map(function(g){return {src:IS(g.file),cap:g.caption||'',ro:1}}).concat(photos);
-drawGallery();draw();
-}).catch(function(){});
+
+// ── Load content/notes.json ──────────────────────────────────────────────────
+fetch('content/notes.json',{cache:'no-cache'})
+  .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json()})
+  .then(function(d){
+    // Gallery
+    photos=(d.gallery||[]).map(function(g){
+      return typeof g==='string'?{src:g,cap:''}:{src:g.file||g.src||'',cap:g.caption||g.cap||''};
+    });
+    // Notes: support both old folder-based schema and new category schema
+    notes=(d.notes||[]).map(function(n,i){
+      var cat=n.category||n.folder||'Class notes';
+      // Flatten legacy folder paths like "Class notes/Adavus" → "Class notes"
+      if(cat.indexOf('/')>-1)cat=cat.split('/')[0].trim();
+      return {id:n.id||('r'+i),title:n.title||'Untitled',category:cat,body:n.body||'',links:n.links||[],images:n.images||[],date:n.date||''};
+    });
+    draw();
+    drawGallery();
+  })
+  .catch(function(err){
+    notes=[];photos=[];
+    draw();drawGallery();
+  });
+
 })();
 </script>
+
+<script src="sync.js"></script>
 </body>
 </html>
